@@ -1,28 +1,64 @@
-# vue-chat
-Vue.js Chat Application: A simple and interactive chat application built with Vue.js, designed to demonstrate real-time messaging features. This project includes user authentication, message storage, and UI components that enhance user experience. Docker is used for development and deployment environments.
+# Real Chat
 
-# vue-sample
+`Real Chat` は、Vue 3 と Firebase を使ったリアルタイムチャット / 相談アプリです。
+現在は認証、ユーザー一覧、ダイレクトチャットを中心に実装されており、今後 `threads` ベースの相談投稿とコメント機能を追加していく前提です。
 
-## Project setup
-```
+## 現在の主な機能
+
+- Firebase Authentication を使った登録 / ログイン
+- Firestore 上の `users` コレクションを使ったユーザー一覧表示
+- 1対1 のダイレクトチャット
+- プロフィール画面の基本表示
+
+## 技術スタック
+
+- Vue 3
+- Vue Router
+- Firebase Authentication
+- Cloud Firestore
+- Docker
+
+## セットアップ
+
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
+## 開発コマンド
+
+### 開発サーバー
+
+```bash
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
+### 本番ビルド
+
+```bash
 npm run build
 ```
 
-### Lints and fixes files
-```
+### Lint
+
+```bash
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Docker で起動する場合
 
+```bash
+docker compose up --build
+```
+
+## 関連ドキュメント
+
+- [docs/vision.md](./docs/vision.md)
+- [docs/routes.md](./docs/routes.md)
+- [docs/db/firestore.md](./docs/db/firestore.md)
+- [docs/emulator-acceptance.md](./docs/emulator-acceptance.md)
+
+## 補足
+
+- 画面上のアプリ名は `Real Chat` を使用する
+- npm package 名と Docker image 名は `real-chat` 系の表記に揃える
+- Firebase Emulator Suite を使った受け入れ確認は `docs/emulator-acceptance.md` を基準にする
