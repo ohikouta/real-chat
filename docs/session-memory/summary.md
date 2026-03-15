@@ -1,8 +1,8 @@
 # Project Summary
 
-- Updated At: 2026-03-15T12:23:19Z
-- Branch: codex-rules-guardrails
-- HEAD: 552f6a87
+- Updated At: 2026-03-15T12:33:53Z
+- Branch: issue-47-view-route-cleanup
+- HEAD: 012382aa
 - Updated By: Codex
 
 ## Current Status
