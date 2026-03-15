@@ -263,7 +263,7 @@
                 <mxCell id="602" value="if user: show Email\nelse: No user is logged in" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9fafb;strokeColor=#d1d5db;align=left;spacingLeft=12;" parent="1" vertex="1">
                     <mxGeometry x="120" y="220" width="1040" height="100" as="geometry"/>
                 </mxCell>
-                <mxCell id="603" value="Note: ChatView import is commented out in current code" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;" parent="1" vertex="1">
+                <mxCell id="603" value="Note: Profile screen is routed via ProfileView and renders ProfileDetails" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;" parent="1" vertex="1">
                     <mxGeometry x="120" y="350" width="1040" height="70" as="geometry"/>
                 </mxCell>
             </root>

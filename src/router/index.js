@@ -1,19 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { getAuth } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 import HomeView from '../views/HomeView.vue';
+import LoginView from '../views/LoginView.vue';
+import RegisterView from '../views/RegisterView.vue';
+import ProfileView from '../views/ProfileView.vue';
+import UsersView from '../views/UsersView.vue';
 import PrivateChatView from '../views/PrivateChatView.vue';
-import UserList from '../components/UserList.vue';
-import RegisterComponent from '../components/RegisterComponent.vue';
-import LoginComponent from '../components/LoginComponent.vue';
-import ProfileComponent from '../components/ProfileComponent.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
-  { path: '/register', component: RegisterComponent },
-  { path: '/login', component: LoginComponent },
-  { path: '/profile', component: ProfileComponent },
-  { path: '/users', name: 'UserList', component: UserList },
-  { path: '/chat/:userId', name: 'PrivateChat', component: PrivateChatView }
+  { path: '/login', name: 'Login', component: LoginView, meta: { guestOnly: true } },
+  { path: '/register', name: 'Register', component: RegisterView, meta: { guestOnly: true } },
+  { path: '/profile', name: 'Profile', component: ProfileView, meta: { requiresAuth: true } },
+  { path: '/users', name: 'Users', component: UsersView, meta: { requiresAuth: true } },
+  { path: '/chat/:userId', name: 'PrivateChat', component: PrivateChatView, meta: { requiresAuth: true } }
 ];
 
 const router = createRouter({
@@ -22,8 +22,6 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const auth = getAuth();
-
   await new Promise((resolve) => {
     const unsubscribe = auth.onAuthStateChanged(() => {
       unsubscribe();
@@ -32,13 +30,10 @@ router.beforeEach(async (to, from, next) => {
   });
 
   const user = auth.currentUser;
-
-  const requireAuth = ['/users', '/profile'].includes(to.path) || 
-                      to.path.startsWith('/chat/');
   
-  if (requireAuth && !user) {
+  if (to.meta.requiresAuth && !user) {
     next('/login');
-  } else if ((to.path === '/login' || to.path === '/register') && user) {
+  } else if (to.meta.guestOnly && user) {
     next('/');
   } else {
     next();

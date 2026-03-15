@@ -1,15 +1,16 @@
 # Project Summary
 
-- Updated At: 2026-03-11T12:45:00Z
-- Branch: work
-- HEAD: f9bb979e
+- Updated At: 2026-03-15T12:23:19Z
+- Branch: codex-rules-guardrails
+- HEAD: 552f6a87
 - Updated By: Codex
 
 ## Current Status
 
 - `#25` は完了し、PR `#32` は merge 済み
 - `#27` は完了し、PR `#37` は merge 済み
-- 現在の open Issue は `#26` `#28` `#29` `#30`
+- `#30` は完了し、PR `#34` は merge 済み
+- 現在の open Issue は `#40` - `#48`
 - Firestore 設計の基準は [firestore.md](../db/firestore.md)
 
 ## Recent Progress
@@ -25,6 +26,18 @@
 - `#37` のレビュー指摘を受けて `chatId` を長さプレフィックス方式へ修正
 - Copilot レビューコメントへ修正内容を返信
 - PR `#37` を merge し、Issue `#27` を closed 確認
+- PR `#35` を close し、Issue `#29` の権限方針整理を完了
+- PR `#36` を merge し、Issue `#28` のクエリ / インデックス設計整理を完了
+- `#28` のレビューで、ページ単位でクエリ設計を整理し、`Users` の最新メッセージ表示は都度クエリを基本とする方針に整理
+- `directMessages` の時系列表示は `createdAt` を基準とし、旧 `messages.timestamp` は送信日時として扱う前提に整理
+- `docs/emulator-acceptance.md` の `threads.commentCount` / `lastCommentAt` 前提を現行方針に合わせて調整
+- PR `#34` を review 後に merge し、Issue `#30` が closed になったことを確認
+- Obsidian `タスク.md` の `vue-chat` レーンで `#30` を完了へ同期
+- Obsidian の `vue-chat` レーンにあった未起票の実装タスクを GitHub Issue `#40` - `#48` として起票
+- `#47` の着手として、route 直結の画面を `views` に寄せ、`ProfileComponent` を `ProfileDetails` へ改名
+- `HomeView` の重複していた Firestore 購読 / 送信責務を削除し、`ChatView` を廃止
+- `src/router/index.js` の route name と guard 判定を整理し、`docs/routes.md` など関連ドキュメントを同期
+- `npm run lint` を実行し、lint error なしを確認
 
 ## Current Decisions
 
@@ -39,17 +52,22 @@
 - 並列作業では branch だけでなく worktree も分ける
 - Codex のガードレールは `AGENTS.md` とは別に `.codex/rules/*.rules` で管理する
 - `gh` の読み取り系は許可、変更系は都度確認、`git reset --hard` と `firebase deploy` は禁止する
+- `users.isOnline` はユーザー任意更新ではなくシステム管理フィールドとして扱い、必要なら表示可否は別設定で持つ
+- `threads.commentCount` / `threads.lastCommentAt` は必須前提にせず、基本は `comments` から取得する
+- Vue / React の設計文書は、ページ責務とコンポーネント責務を先に分離してから書く
+- `Users` の最新メッセージ表示は、必要ならまず都度クエリで扱い、専用コレクション追加はパフォーマンス課題が出てから検討する
+- `PrivateChat` の時系列表示は `directMessages.createdAt` を基準にする
+- route 直結の画面は `views` を入口にし、再利用 UI は `components` に置く
+- route guard は path 文字列の分岐より `meta` ベースを優先する
 
 ## Next Actions
 
-- PR [#33](https://github.com/ohikouta/vue-chat/pull/33) `#26` をレビューする
-- PR [#36](https://github.com/ohikouta/vue-chat/pull/36) `#28` をレビューする
-- PR [#35](https://github.com/ohikouta/vue-chat/pull/35) `#29` をレビューする
-- PR [#34](https://github.com/ohikouta/vue-chat/pull/34) `#30` をレビューする
-- `.codex/rules` を Codex 再起動後に `codex execpolicy check` で検証する
+- Issue `#47` の差分を branch / PR にまとめる
+- `#47` のレビュー後、`#46` または `#44` の着手順を決める
 
 ## Reference Logs
 
 - Obsidian 実施ログ `2026-03-08-Firestore設計整理.md` を追加
 - [audit.md](./audit.md)
+- [failure-notes.md](./failure-notes.md)
 - [multi-agent-orchestration.md](../multi-agent-orchestration.md)
