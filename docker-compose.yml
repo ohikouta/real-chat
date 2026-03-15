@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: vue-chat-app
+    image: real-chat-app
     ports:
       - "8080:8080"
     volumes:
