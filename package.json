@@ -1,5 +1,5 @@
 {
-  "name": "vue-sample",
+  "name": "real-chat",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
   "dependencies": {
     "core-js": "^3.8.3",
     "firebase": "^10.12.5",
-    "firebase-admin": "^13.0.0",
+    "firebase-admin": "^13.4.0",
     "vue": "^3.2.13",
     "vue-router": "^4.4.3"
   },

@@ -1,4 +1,3 @@
-<!-- PrivateChatView.vue -->
 <template>
   <div class="chat-wrapper">
     <button @click="goToHome" class="home-button">Home</button>
@@ -43,7 +42,7 @@
         newMessage: '',
         currentUser: getAuth().currentUser,
         chatPartnerId: '',
-        chatPartnerName: '', // 相手の名前を動的に取得
+        chatPartnerName: '',
       };
     },
     async created() {

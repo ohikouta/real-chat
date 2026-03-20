@@ -4,7 +4,7 @@
     <button @click="uploadImage">Upload Profile Image</button>
     <p v-if="uploadProgress">Uploading: {{ uploadProgress }}%</p>
     <p v-if="downloadURL">Uploaded: <a :href="downloadURL" target="_blank">{{ downloadURL }}</a></p>
-    <img src="downloadURL" :src="downloadURL" alt="Profile Image" />
+    <img :src="downloadURL" alt="Profile Image" />
   </div>
 </template>
 

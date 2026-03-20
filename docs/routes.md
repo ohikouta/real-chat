@@ -1,6 +1,6 @@
 # Routing Specification
 
-このドキュメントは、ルーティング仕様をまとめています。 
+このドキュメントは、ルーティング仕様をまとめています。
 画面遷移の俯瞰は `docs/view-wireframes.drawio` の `FLOW_Navigation` を参照し、最終的な実装判断は本書を基準にします。
 
 ## 運用ルール

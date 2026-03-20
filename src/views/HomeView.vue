@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <LandingHero @login="goToLogin" @register="goToRegister"/>
-    </div>  
+    </div>
   </div>
 </template>
 
@@ -48,7 +48,6 @@ export default {
     };
   }
 };
-
 </script>
 
 <style scoped>

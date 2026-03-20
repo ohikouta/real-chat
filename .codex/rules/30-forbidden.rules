@@ -1,0 +1,51 @@
+# Hard stops for operations that are too risky for the agent to run automatically.
+
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "forbidden",
+    justification = "Do not discard work with `git reset --hard`; inspect changes with `git status`/`git diff` and coordinate instead.",
+    match = [
+        "git reset --hard",
+        "git reset --hard HEAD~1",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "checkout", "--"],
+    decision = "forbidden",
+    justification = "Do not revert files with `git checkout --`; use a reviewed patch or coordinate with the user instead.",
+    match = [
+        "git checkout -- src/App.vue",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "clean", ["-fd", "-xdf"]],
+    decision = "forbidden",
+    justification = "Do not bulk-delete untracked files with `git clean`; remove only explicitly reviewed paths.",
+    match = [
+        "git clean -fd",
+        "git clean -xdf",
+    ],
+)
+
+prefix_rule(
+    pattern = ["firebase", "deploy"],
+    decision = "forbidden",
+    justification = "Production deployment is out of scope for the agent; prepare changes and let a human deploy intentionally.",
+    match = [
+        "firebase deploy",
+        "firebase deploy --only hosting",
+    ],
+)
+
+prefix_rule(
+    pattern = [["npm", "pnpm", "yarn"], "publish"],
+    decision = "forbidden",
+    justification = "Package publication should not be triggered by the agent from this repository.",
+    match = [
+        "npm publish",
+        "pnpm publish",
+        "yarn publish",
+    ],
+)

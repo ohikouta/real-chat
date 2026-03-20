@@ -1,0 +1,83 @@
+# Safe escalations for common project workflows.
+
+prefix_rule(
+    pattern = ["codex", "execpolicy", "check"],
+    decision = "allow",
+    justification = "Rule checks are safe and help validate guardrails.",
+    match = [
+        "codex execpolicy check --pretty --rules .codex/rules/10-safe-default.rules -- git status",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", ["status", "diff", "log", "show"]],
+    decision = "allow",
+    justification = "Read-only git inspection is safe to run without prompting.",
+    match = [
+        "git status",
+        "git diff --stat",
+        "git log --oneline -5",
+        "git show HEAD",
+    ],
+    not_match = [
+        "git add .",
+        "git commit -m test",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "branch", ["--show-current", "--list", "-vv"]],
+    decision = "allow",
+    justification = "Explicitly read-only git branch inspection is safe to run without prompting.",
+    match = [
+        "git branch --show-current",
+        "git branch --list",
+        "git branch -vv",
+    ],
+    not_match = [
+        "git branch feature/test",
+        "git branch -d old-branch",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "worktree", "list"],
+    decision = "allow",
+    justification = "Listing worktrees is read-only.",
+    match = [
+        "git worktree list",
+    ],
+    not_match = [
+        "git worktree add ../vue-chat-issue-1",
+    ],
+)
+
+prefix_rule(
+    pattern = ["npm", "run", ["lint", "build"]],
+    decision = "allow",
+    justification = "Project validation commands are safe default escalations.",
+    match = [
+        "npm run lint",
+        "npm run build",
+    ],
+    not_match = [
+        "npm run serve",
+        "npm install",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", ["issue", "pr"], ["view", "list", "status"]],
+    decision = "allow",
+    justification = "Read-only GitHub inspection is part of the standard workflow.",
+    match = [
+        "gh issue list",
+        "gh issue view 26",
+        "gh pr list",
+        "gh pr view 33",
+    ],
+    not_match = [
+        "gh pr create",
+        "gh pr merge 33",
+    ],
+)

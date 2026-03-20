@@ -1,0 +1,120 @@
+# Prompt for commands that are useful but can change repo, dependencies, or remote state.
+
+prefix_rule(
+    pattern = ["git", ["add", "commit", "push", "pull", "fetch", "merge", "rebase", "switch", "checkout", "cherry-pick", "restore"]],
+    decision = "prompt",
+    justification = "Git operations that change state or sync with remotes should be reviewed each time.",
+    match = [
+        "git add src/App.vue",
+        "git commit -m update",
+        "git push origin work",
+        "git pull --rebase",
+        "git fetch origin",
+    ],
+    not_match = [
+        "git status",
+        "git diff",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "worktree", ["add", "remove", "prune"]],
+    decision = "prompt",
+    justification = "Worktree changes alter the local workspace layout and should be intentional.",
+    match = [
+        "git worktree add ../vue-chat-issue-26 -b feature/issue-26",
+        "git worktree prune",
+    ],
+    not_match = [
+        "git worktree list",
+    ],
+)
+
+prefix_rule(
+    pattern = ["npm", ["install", "uninstall", "update", "audit"]],
+    decision = "prompt",
+    justification = "Dependency changes and audit fixes can rewrite lockfiles and alter runtime behavior.",
+    match = [
+        "npm install",
+        "npm uninstall firebase",
+        "npm update",
+        "npm audit fix",
+    ],
+    not_match = [
+        "npm run lint",
+    ],
+)
+
+prefix_rule(
+    pattern = ["npx"],
+    decision = "prompt",
+    justification = "npx can download and execute arbitrary packages.",
+    match = [
+        "npx firebase-tools --help",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "issue", ["create", "edit", "comment", "close", "reopen", "delete"]],
+    decision = "prompt",
+    justification = "Issue mutations affect the official project task tracker and should be confirmed.",
+    match = [
+        "gh issue create --title test",
+        "gh issue comment 26 --body noted",
+        "gh issue close 26",
+    ],
+    not_match = [
+        "gh issue view 26",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "pr", ["create", "edit", "comment", "close", "reopen", "ready", "review", "merge"]],
+    decision = "prompt",
+    justification = "Pull request mutations affect the shared review flow and should be confirmed.",
+    match = [
+        "gh pr create --draft",
+        "gh pr review 33 --comment",
+        "gh pr merge 33 --squash",
+    ],
+    not_match = [
+        "gh pr view 33",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "api"],
+    decision = "prompt",
+    justification = "Direct GitHub API calls bypass higher-level command safety and should be reviewed.",
+    match = [
+        "gh api repos/ohikouta/vue-chat/issues",
+    ],
+)
+
+prefix_rule(
+    pattern = ["firebase"],
+    decision = "prompt",
+    justification = "Firebase commands may affect emulators, project config, or remote resources.",
+    match = [
+        "firebase emulators:start",
+        "firebase deploy",
+    ],
+)
+
+prefix_rule(
+    pattern = ["docker"],
+    decision = "prompt",
+    justification = "Docker commands can start services, mount directories, or alter local state.",
+    match = [
+        "docker compose up",
+    ],
+)
+
+prefix_rule(
+    pattern = ["rm", "-rf"],
+    decision = "prompt",
+    justification = "Recursive forced deletes should always be deliberate.",
+    match = [
+        "rm -rf dist",
+    ],
+)

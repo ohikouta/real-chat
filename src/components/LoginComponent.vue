@@ -35,7 +35,7 @@ export default {
 				});
 				
 				// ログイン成功後の処理(例：リダイレクト)
-				this.$router.push({ name: "Chat" });
+				this.$router.push({ name: "Home" });
 			} catch (error) {
 				console.error("Login error:", error);
 			}
