@@ -7,6 +7,21 @@ import ProfileView from '../views/ProfileView.vue';
 import UsersView from '../views/UsersView.vue';
 import PrivateChatView from '../views/PrivateChatView.vue';
 
+let authReadyPromise;
+
+function getAuthReady() {
+  if (!authReadyPromise) {
+    authReadyPromise = new Promise((resolve) => {
+      const unsubscribe = auth.onAuthStateChanged(() => {
+        unsubscribe();
+        resolve();
+      });
+    });
+  }
+
+  return authReadyPromise;
+}
+
 const routes = [
   { path: '/', name: 'Home', component: HomeView },
   { path: '/login', name: 'Login', component: LoginView, meta: { guestOnly: true } },
@@ -22,12 +37,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  await new Promise((resolve) => {
-    const unsubscribe = auth.onAuthStateChanged(() => {
-      unsubscribe();
-      resolve();
-    });
-  });
+  await getAuthReady();
 
   const user = auth.currentUser;
 

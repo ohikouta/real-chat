@@ -18,17 +18,24 @@ export default {
   name: 'ProfileDetails',
   data() {
     return {
-      user: null
+      user: null,
+      unsubscribeAuth: null
     };
   },
   created() {
-    onAuthStateChanged(auth, (user) => {
+    this.unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
         this.user = user;
       } else {
         this.user = null;
       }
     });
+  },
+  beforeUnmount() {
+    if (this.unsubscribeAuth) {
+      this.unsubscribeAuth();
+      this.unsubscribeAuth = null;
+    }
   }
 };
 </script>

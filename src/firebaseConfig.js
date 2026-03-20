@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAnalytics, logEvent } from 'firebase/analytics'; // 追加
 import { getAuth } from 'firebase/auth';
 import { getStorage } from "firebase/storage";
 
@@ -21,13 +20,6 @@ const auth = getAuth(app);
 // Firestoreのインスタンスを取得
 const db = getFirestore(app);
 const storage = getStorage(app);
-
-// Optional: Analyticsの初期化
-const analytics = getAnalytics(app);
-
-// ページビューイベントを記録
-logEvent(analytics, 'page_view');
-
 
 export { db };
 export { auth };

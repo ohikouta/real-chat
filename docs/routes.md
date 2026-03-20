@@ -11,7 +11,7 @@
 
 ## As-Is（現状実装）
 
-参照: [src/router/index.js](/Users/koutaohi/projects/vue-chat/src/router/index.js)
+参照: [src/router/index.js](../src/router/index.js)
 
 | Path | Route Name | Component | Auth Required | Params | Notes |
 |---|---|---|---|---|---|
