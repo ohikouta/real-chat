@@ -1,6 +1,6 @@
 # Routing Specification
 
-このドキュメントは、ルーティング仕様をまとめています。 
+このドキュメントは、ルーティング仕様をまとめています。
 画面遷移の俯瞰は `docs/view-wireframes.drawio` の `FLOW_Navigation` を参照し、最終的な実装判断は本書を基準にします。
 
 ## 運用ルール
@@ -11,15 +11,15 @@
 
 ## As-Is（現状実装）
 
-参照: [src/router/index.js](/Users/koutaohi/projects/vue-chat/src/router/index.js)
+参照: [src/router/index.js](../src/router/index.js)
 
 | Path | Route Name | Component | Auth Required | Params | Notes |
 |---|---|---|---|---|---|
 | `/` | `Home` | `HomeView` | No | - | 未ログイン時はHero、ログイン時はUserListを表示 |
-| `/register` | - | `RegisterComponent` | No | - | ログイン済みは`/`へリダイレクト |
-| `/login` | - | `LoginComponent` | No | - | ログイン済みは`/`へリダイレクト |
-| `/profile` | - | `ProfileComponent` | Yes | - | 未ログイン時は`/login`へ |
-| `/users` | `UserList` | `UserList` | Yes | - | 未ログイン時は`/login`へ |
+| `/register` | `Register` | `RegisterView` | No | - | `RegisterComponent` を表示。ログイン済みは`/`へリダイレクト |
+| `/login` | `Login` | `LoginView` | No | - | `LoginComponent` を表示。ログイン済みは`/`へリダイレクト |
+| `/profile` | `Profile` | `ProfileView` | Yes | - | `ProfileDetails` を表示。未ログイン時は`/login`へ |
+| `/users` | `Users` | `UsersView` | Yes | - | `UserList` を表示。未ログイン時は`/login`へ |
 | `/chat/:userId` | `PrivateChat` | `PrivateChatView` | Yes | `userId` | 未ログイン時は`/login`へ |
 
 ## To-Be（設計反映後）
@@ -29,11 +29,11 @@
 | Path | Route Name (proposal) | Component (proposal) | Auth Required | Params | Notes |
 |---|---|---|---|---|---|
 | `/` | `Home` | `HomeView` | No | - | `SCREEN_Home` |
-| `/login` | `Login` | `LoginComponent` | No | - | `SCREEN_Login` |
-| `/register` | `Register` | `RegisterComponent` | No | - | `SCREEN_Register` |
-| `/users` | `Users` | `UserList` | Yes | - | `SCREEN_Users` |
+| `/login` | `Login` | `LoginView` | No | - | `SCREEN_Login` |
+| `/register` | `Register` | `RegisterView` | No | - | `SCREEN_Register` |
+| `/users` | `Users` | `UsersView` | Yes | - | `SCREEN_Users` |
 | `/chat/:userId` | `PrivateChat` | `PrivateChatView` | Yes | `userId` | `SCREEN_PrivateChat`（1:1 DM専用） |
-| `/profile` | `Profile` | `ProfileComponent` | Yes | - | `SCREEN_Profile` |
+| `/profile` | `Profile` | `ProfileView` | Yes | - | `SCREEN_Profile` |
 | `/timeline` | `Timeline` | `TimelineView` | Yes | - | `SCREEN_Timeline`（新規） |
 | `/timeline/:postId/thread` | `ThreadDetail` | `ThreadDetailView` | Yes | `postId` | `SCREEN_ThreadDetail`（新規） |
 
@@ -41,9 +41,9 @@
 
 ### 現状
 
-- 認証必須: `/users`, `/profile`, `/chat/*`
+- 認証必須: `meta.requiresAuth` を付けた `/users`, `/profile`, `/chat/*`
 - 未認証で認証必須ページへアクセス: `/login`へリダイレクト
-- 認証済みで`/login`または`/register`へアクセス: `/`へリダイレクト
+- 認証済みで `meta.guestOnly` を付けた `/login` または `/register` へアクセス: `/`へリダイレクト
 
 ### To-Be
 
