@@ -55,6 +55,7 @@
 - `#43` の着手として `PrivateChatView` を `directMessages` + `chatId` + `createdAt` 前提の購読 / 書き込みへ切り替え
 - `MessageInput` の未定義 `count` / `increment` を削除し、DM 入力用の最小コンポーネントへ整理
 - `UserList` の `users/{userId}/messages/latest` 表示は壊れない最小フォールバックへ調整
+- `directMessages` の `chatId + createdAt` 用 Firestore 複合インデックス定義として `firebase.json` と `firestore.indexes.json` を追加
 - `npm run lint` を実行し、lint error なしを確認
 - `npm run build` を実行し、bundle size warning のみで build 成功を確認
 

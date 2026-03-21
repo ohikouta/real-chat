@@ -171,3 +171,4 @@
 - DM 一覧購読は `chatId + createdAt`、新規送信は `directMessages.createdAt` を使う実装へ寄せた
 - `MessageInput` の未定義状態を削除し、DM 送信用の最小コンポーネントへ整理
 - `UserList` の `users/{userId}/messages/latest` は補助表示として壊れない読み取りへ調整
+- `directMessages` の `chatId + createdAt` 複合インデックス定義を `firebase.json` / `firestore.indexes.json` として追加
