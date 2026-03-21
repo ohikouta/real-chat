@@ -20,6 +20,7 @@
 | `/login` | `Login` | `LoginView` | No | - | `LoginComponent` を表示。ログイン済みは`/`へリダイレクト |
 | `/profile` | `Profile` | `ProfileView` | Yes | - | `ProfileDetails` を表示。未ログイン時は`/login`へ |
 | `/timeline` | `Timeline` | `TimelineView` | Yes | - | `threads` を新着順に表示し、投稿フォームを持つ。未ログイン時は`/login`へ |
+| `/timeline/:postId/thread` | `ThreadDetail` | `ThreadDetailView` | Yes | `postId` | スレッド本体とコメント一覧、コメント投稿フォームを表示。未ログイン時は`/login`へ |
 | `/users` | `Users` | `UsersView` | Yes | - | `UserList` を表示。未ログイン時は`/login`へ |
 | `/chat/:userId` | `PrivateChat` | `PrivateChatView` | Yes | `userId` | 未ログイン時は`/login`へ |
 
@@ -54,7 +55,10 @@
 
 ## 実装反映チェックリスト
 
-1. `src/router/index.js` に `ThreadDetail` ルートを追加
-2. `beforeEach` の認証必須判定に `ThreadDetail` を追加
-3. `Route Name` を表記ゆれなく統一（`Users`, `Login`, `Register`, `Profile`, `Timeline`, `ThreadDetail`）
-4. `FLOW_Navigation` と差分がないことを確認
+1. `beforeEach` の認証必須判定が `ThreadDetail` を含む current route と一致していることを確認する
+2. `Route Name` を表記ゆれなく統一（`Users`, `Login`, `Register`, `Profile`, `Timeline`, `ThreadDetail`）
+3. `FLOW_Navigation` と差分がないことを確認
+
+## 今後対応すること
+
+1. `ThreadDetail` 画面から参加者一覧を表示できるようにする（#42）

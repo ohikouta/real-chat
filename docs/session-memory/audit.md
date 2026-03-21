@@ -1,5 +1,13 @@
 # Project Audit Log
 
+## 2026-03-21T14:07:45Z
+
+- PR `#53` の merge を取り込み、`issue-41-thread-detail` worktree を `origin/main` 最新へ更新
+- `#41` の実装として `src/views/ThreadDetailView.vue` を追加し、スレッド詳細・コメント一覧・コメント投稿フォームを実装
+- `src/router/index.js` に `/timeline/:postId/thread` ルートを追加し、`src/views/TimelineView.vue` から詳細導線を追加
+- `docs/routes.md` を `ThreadDetail` 実装後の状態へ更新
+- `npm run lint` は成功、`npm run build` は bundle size warning のみで成功
+
 ## 2026-03-21T00:27:14Z
 
 - `#52` の merge を取り込み、`issue-40-threads` worktree を `origin/main` 最新へ更新
@@ -141,3 +149,11 @@
 - `ProfileComponent` を `ProfileDetails` へ改名し、未使用の `ChatView` を削除
 - `docs/routes.md` `docs/db/messages-migration.md` `docs/db/firestore-queries.md` `docs/view-wireframes.drawio` を現行構成へ同期
 - `npm run lint` を実行し、lint error がないことを確認
+
+## 2026-03-21T14:45:00Z
+
+- PR `#54` の Copilot レビューを確認し、`ThreadDetailView` が `route.params.postId` 変更時も購読を張り直すよう修正
+- スレッド未存在時はコメント投稿を止めるガードと submit button disabled を追加
+- `TimelineView` の `詳細を見る` にスレッドタイトル込みの `aria-label` を追加
+- `docs/routes.md` のチェックリストから将来 Issue `#42` の項目を分離し、今後対応セクションへ移動
+- `npm run lint` と `npm run build` を再実行し、warning のみで通過を確認

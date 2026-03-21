@@ -71,7 +71,16 @@
               <span class="thread-card__author">{{ thread.authorName }}</span>
               <span>{{ formatDate(thread.createdAt) }}</span>
             </div>
-            <h3>{{ thread.title }}</h3>
+            <div class="thread-card__header">
+              <h3>{{ thread.title }}</h3>
+              <router-link
+                class="thread-card__link"
+                :to="{ name: 'ThreadDetail', params: { postId: thread.id } }"
+                :aria-label="`${thread.title} の詳細を見る`"
+              >
+                詳細を見る
+              </router-link>
+            </div>
             <p class="thread-card__body">{{ thread.body }}</p>
             <ul v-if="thread.tags.length" class="tag-list">
               <li v-for="tag in thread.tags" :key="tag" class="tag-chip">#{{ tag }}</li>
@@ -376,6 +385,13 @@ export default {
   padding: 22px;
 }
 
+.thread-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .thread-card__meta {
   display: flex;
   justify-content: space-between;
@@ -388,6 +404,13 @@ export default {
 .thread-card__author {
   font-weight: 700;
   color: #35469c;
+}
+
+.thread-card__link {
+  flex-shrink: 0;
+  color: #4c5dd8;
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .thread-card__body {
@@ -437,7 +460,8 @@ export default {
   }
 
   .threads-section__header,
-  .thread-card__meta {
+  .thread-card__meta,
+  .thread-card__header {
     flex-direction: column;
     align-items: flex-start;
   }
