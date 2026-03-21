@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { getAuth } from 'firebase/auth';
 import {
   addDoc,
@@ -84,30 +85,57 @@ export default {
   },
   async created() {
     this.currentUser = getAuth().currentUser;
-    this.chatPartnerId = this.$route.params.userId;
-
-    if (!this.currentUser || !this.chatPartnerId) {
-      this.loadError = 'DMを開くためのユーザー情報が不足しています。';
-      this.isLoading = false;
-      return;
-    }
-
-    if (this.currentUser.uid === this.chatPartnerId) {
-      this.chatPartnerName = '自分自身';
-      this.loadError = '自分自身とのDMは開けません。';
-      this.isLoading = false;
-      return;
-    }
-
-    await this.fetchChatPartnerName();
-    this.subscribeMessages();
+    await this.loadChat(this.$route.params.userId);
   },
   beforeUnmount() {
     if (this.unsubscribeMessages) {
       this.unsubscribeMessages();
     }
   },
+  watch: {
+    '$route.params.userId': {
+      async handler(nextUserId) {
+        if (this.currentUser) {
+          await this.loadChat(nextUserId);
+        }
+      }
+    }
+  },
   methods: {
+    resetChatState() {
+      this.messages = [];
+      this.chatPartnerName = '相手ユーザー';
+      this.isLoading = true;
+      this.loadError = '';
+      this.sendError = '';
+    },
+
+    async loadChat(nextUserId) {
+      this.chatPartnerId = nextUserId || '';
+      if (this.unsubscribeMessages) {
+        this.unsubscribeMessages();
+        this.unsubscribeMessages = null;
+      }
+
+      this.resetChatState();
+
+      if (!this.currentUser || !this.chatPartnerId) {
+        this.loadError = 'DMを開くためのユーザー情報が不足しています。';
+        this.isLoading = false;
+        return;
+      }
+
+      if (this.currentUser.uid === this.chatPartnerId) {
+        this.chatPartnerName = '自分自身';
+        this.loadError = '自分自身とのDMは開けません。';
+        this.isLoading = false;
+        return;
+      }
+
+      await this.fetchChatPartnerName();
+      this.subscribeMessages();
+    },
+
     currentChatId() {
       return generateChatId(this.currentUser.uid, this.chatPartnerId);
     },
@@ -232,7 +260,7 @@ export default {
     },
 
     scrollToBottom() {
-      this.$nextTick(() => {
+      nextTick(() => {
         const container = this.$refs.messagesContainer;
         if (container) {
           container.scrollTop = container.scrollHeight;
