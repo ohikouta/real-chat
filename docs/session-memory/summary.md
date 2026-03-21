@@ -1,8 +1,8 @@
 # Project Summary
 
-- Updated At: 2026-03-21T00:27:14Z
-- Branch: issue-40-threads
-- HEAD: e117e26f
+- Updated At: 2026-03-21T14:07:45Z
+- Branch: issue-41-thread-detail
+- HEAD: e45b1402
 - Updated By: Codex
 
 ## Current Status
@@ -10,7 +10,7 @@
 - `#25` は完了し、PR `#32` は merge 済み
 - `#27` は完了し、PR `#37` は merge 済み
 - `#30` は完了し、PR `#34` は merge 済み
-- 現在の open Issue は `#40` - `#48`
+- 現在の open Issue は `#41` - `#48`
 - Firestore 設計の基準は [firestore.md](../db/firestore.md)
 
 ## Recent Progress
@@ -44,6 +44,12 @@
 - `Header` に `Timeline` 導線を追加し、`docs/routes.md` を現行ルーティングへ同期
 - `LandingHero` の参照画像 `src/assets/sample_chat.png` を追加し、`npm run build` が通る状態へ復旧
 - `npm run build` を実行し、bundle size warning のみで build 成功を確認
+- PR `#53` が merge され、`#40` の相談投稿と新着一覧が `main` に取り込まれた
+- `#41` の着手として `/timeline/:postId/thread` を追加し、`ThreadDetailView` でスレッド詳細とコメント機能を実装
+- `threads/{threadId}/comments` を `createdAt asc` で購読し、コメント投稿を `body` `authorId` `authorName` `createdAt` `updatedAt` で保存するよう実装
+- `TimelineView` から `ThreadDetail` への導線を追加し、`docs/routes.md` を詳細画面込みの状態へ同期
+- `npm run lint` を実行し、lint error なしを確認
+- `npm run build` を実行し、bundle size warning のみで build 成功を確認
 
 ## Current Decisions
 
@@ -66,11 +72,12 @@
 - route 直結の画面は `views` を入口にし、再利用 UI は `components` に置く
 - route guard は path 文字列の分岐より `meta` ベースを優先する
 - スレッド一覧はまず `threads` を `createdAt desc` で購読し、タグ絞り込みや詳細遷移は後続 Issue で段階的に足す
+- スレッド詳細は `threads/{threadId}` と `threads/{threadId}/comments` を別購読で扱い、コメントは `createdAt asc` 表示を基本とする
 
 ## Next Actions
 
-- Issue `#40` の差分を branch / PR にまとめる
-- `#40` のレビュー後、`#41` のスレッド詳細 / コメント機能へ進む
+- Issue `#41` の差分を branch / PR にまとめる
+- `#41` のレビュー後、`#42` の参加者一覧を詳細画面へ追加する
 
 ## Reference Logs
 

@@ -1,5 +1,13 @@
 # Project Audit Log
 
+## 2026-03-21T14:07:45Z
+
+- PR `#53` の merge を取り込み、`issue-41-thread-detail` worktree を `origin/main` 最新へ更新
+- `#41` の実装として `src/views/ThreadDetailView.vue` を追加し、スレッド詳細・コメント一覧・コメント投稿フォームを実装
+- `src/router/index.js` に `/timeline/:postId/thread` ルートを追加し、`src/views/TimelineView.vue` から詳細導線を追加
+- `docs/routes.md` を `ThreadDetail` 実装後の状態へ更新
+- `npm run lint` は成功、`npm run build` は bundle size warning のみで成功
+
 ## 2026-03-21T00:27:14Z
 
 - `#52` の merge を取り込み、`issue-40-threads` worktree を `origin/main` 最新へ更新
