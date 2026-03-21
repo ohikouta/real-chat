@@ -1,5 +1,14 @@
 # Project Audit Log
 
+## 2026-03-21T00:27:14Z
+
+- `#52` の merge を取り込み、`issue-40-threads` worktree を `origin/main` 最新へ更新
+- `#40` の実装として `src/views/TimelineView.vue` を追加し、`threads` 投稿フォームと新着一覧を実装
+- `src/router/index.js` に `/timeline` ルート、`src/components/Header.vue` に `Timeline` 導線を追加
+- `docs/routes.md` を `/timeline` 実装後の状態へ更新
+- build を妨げていた `src/assets/sample_chat.png` 欠落を解消
+- `npm run lint` は成功、`npm run build` は bundle size warning のみで成功
+
 ## 2026-03-08T04:03:59Z
 
 - セッション継続用の記録機構を導入
