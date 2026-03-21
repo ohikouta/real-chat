@@ -24,10 +24,12 @@ import { collection, getDocs, getDoc, doc, onSnapshot } from "firebase/firestore
 import defaultProfileImage from "@/assets/default-profile.png"; // デフォルトのプロファイル画像
 
 export default {
+  name: 'UserList',
   data() {
     return {
       users: [],
       defaultProfileImage,
+      unsubscribers: [],
     };
   },
   async created() {
@@ -41,14 +43,18 @@ export default {
         userData.latestMessage = latestMessageDoc.data();
       }
 
-      // オンラインステータスの取得：firestoreでオンラインステータスを監視
-      const userDocRef = doc(db, "users", docSnapshot.id); // Realtime Database インスタンスを取得
-      onSnapshot(userDocRef, (snapshot) => {
+      // オンラインステータスの監視（コンポーネント破棄時に解除）
+      const userDocRef = doc(db, "users", docSnapshot.id);
+      const unsubscribe = onSnapshot(userDocRef, (snapshot) => {
         userData.isOnline = snapshot.data()?.isOnline || false;
       });
+      this.unsubscribers.push(unsubscribe);
 
       return userData;
     }));
+  },
+  beforeUnmount() {
+    this.unsubscribers.forEach((unsub) => unsub());
   }
 };
 </script>
