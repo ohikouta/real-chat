@@ -26,6 +26,9 @@
         </div>
 
         <p v-if="commentsLoading" class="message">コメント参加者を読み込み中です...</p>
+        <p v-else-if="commentsError" class="message message--error">
+          コメント参加者は取得できませんでした。
+        </p>
         <ul v-else class="participant-list">
           <li v-for="participant in participants" :key="participant.key" class="participant-card">
             <p class="participant-name">{{ participant.name }}</p>
