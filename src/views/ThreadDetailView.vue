@@ -121,9 +121,11 @@ export default {
 
       const upsertParticipant = ({ userId, name, isThreadAuthor = false, isCommentAuthor = false }) => {
         const normalizedName = name || '匿名ユーザー';
-        const key = userId ? `user:${userId}` : `name:${normalizedName}`;
-        const current = participantMap.get(key) || {
-          key,
+        const userKey = userId ? `user:${userId}` : '';
+        const nameKey = `name:${normalizedName}`;
+        const fallbackByName = userKey ? participantMap.get(nameKey) : null;
+        const current = (userKey && participantMap.get(userKey)) || fallbackByName || participantMap.get(nameKey) || {
+          key: userKey || nameKey,
           userId: userId || '',
           name: normalizedName,
           isThreadAuthor: false,
@@ -141,7 +143,13 @@ export default {
           current.commentCount += 1;
         }
 
-        participantMap.set(key, current);
+        const nextKey = userKey || nameKey;
+        current.key = nextKey;
+        participantMap.set(nextKey, current);
+
+        if (userKey) {
+          participantMap.delete(nameKey);
+        }
       };
 
       if (thread.value) {
