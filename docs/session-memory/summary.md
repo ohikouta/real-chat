@@ -1,8 +1,8 @@
 # Project Summary
 
-- Updated At: 2026-03-21T14:07:45Z
-- Branch: issue-41-thread-detail
-- HEAD: e45b1402
+- Updated At: 2026-03-22T00:05:00Z
+- Branch: issue-42-thread-participants
+- HEAD: 62a9f5e5
 - Updated By: Codex
 
 ## Current Status
@@ -10,7 +10,7 @@
 - `#25` は完了し、PR `#32` は merge 済み
 - `#27` は完了し、PR `#37` は merge 済み
 - `#30` は完了し、PR `#34` は merge 済み
-- 現在の open Issue は `#41` - `#48`
+- 現在の open Issue は `#42` - `#48`
 - Firestore 設計の基準は [firestore.md](../db/firestore.md)
 
 ## Recent Progress
@@ -50,6 +50,8 @@
 - `TimelineView` から `ThreadDetail` への導線を追加し、`docs/routes.md` を詳細画面込みの状態へ同期
 - PR `#54` の Copilot レビューを受け、`ThreadDetailView` を route param 変更に追従する購読へ修正し、スレッド未存在時のコメント投稿を禁止
 - `TimelineView` の `詳細を見る` に `aria-label` を追加し、`docs/routes.md` の将来タスクを現PRのチェックリストから分離
+- `#42` の着手として `ThreadDetailView` に参加者一覧を追加し、スレッド投稿者とコメント投稿者を `authorId` 基準で重複排除して集約表示するよう実装
+- ユーザー情報が欠ける場合は既存の `authorName` を優先し、欠ける場合は `匿名ユーザー` を表示する方針で統一
 - `npm run lint` を実行し、lint error なしを確認
 - `npm run build` を実行し、bundle size warning のみで build 成功を確認
 
@@ -76,11 +78,12 @@
 - スレッド一覧はまず `threads` を `createdAt desc` で購読し、タグ絞り込みや詳細遷移は後続 Issue で段階的に足す
 - スレッド詳細は `threads/{threadId}` と `threads/{threadId}/comments` を別購読で扱い、コメントは `createdAt asc` 表示を基本とする
 - `ThreadDetailView` は `route.params.postId` の変化を watch し、同一コンポーネント再利用時も購読を張り直す
+- スレッド参加者一覧は `threads.authorId` と `comments.authorId` を優先して集約し、`authorId` が欠ける場合のみ表示名ベースでフォールバックする
 
 ## Next Actions
 
-- PR `#54` の Copilot 指摘に返信し、merge 判定へ進める
-- `#41` のレビュー後、`#42` の参加者一覧を詳細画面へ追加する
+- Issue `#42` の差分を branch / PR にまとめる
+- `#42` のレビュー後、`#43` のダイレクトチャット安定化へ進む
 
 ## Reference Logs
 
