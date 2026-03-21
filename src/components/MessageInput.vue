@@ -30,25 +30,42 @@ export default {
 <style scoped>
 .message-input {
   display: flex;
-  padding: 10px;
-  border-top: 1px solid #ddd;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
 }
 input {
   flex: 1;
-  padding: 10px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 14px;
+  background: #f8fafc;
+  font: inherit;
 }
 button {
-  padding: 10px 20px;
-  background-color: #007bff;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
   color: white;
   border: none;
-  border-radius: 5px;
+  font-weight: 700;
   cursor: pointer;
 }
 button:hover {
-  background-color: #0056b3;
+  filter: brightness(1.05);
+}
+
+@media (max-width: 640px) {
+  .message-input {
+    flex-direction: column;
+  }
+
+  button {
+    min-height: 48px;
+  }
 }
 </style>

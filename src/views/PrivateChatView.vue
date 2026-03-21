@@ -1,10 +1,16 @@
 <template>
   <section class="chat-wrapper">
-    <button @click="goToHome" class="home-button">Home</button>
-
     <div class="chat-container">
+      <div class="chat-topbar">
+        <button @click="goToHome" class="home-button">一覧へ戻る</button>
+        <p class="chat-caption">Direct Messages</p>
+      </div>
+
       <div class="chat-header">
-        <h2>{{ chatPartnerName }}とのDM</h2>
+        <div>
+          <p class="chat-kicker">1:1 Chat</p>
+          <h2>{{ chatPartnerName }}とのDM</h2>
+        </div>
         <p v-if="loadError" class="message message--error">{{ loadError }}</p>
       </div>
 
@@ -30,7 +36,9 @@
       </div>
 
       <p v-if="sendError" class="message message--error">{{ sendError }}</p>
-      <MessageInput @send-message="sendMessage" />
+      <div class="composer-shell">
+        <MessageInput @send-message="sendMessage" />
+      </div>
     </div>
   </section>
 </template>
@@ -273,63 +281,100 @@ export default {
 
 <style scoped>
 .chat-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-  padding: 20px;
-  background: #eef2f8;
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(125, 211, 252, 0.35), transparent 30%),
+    linear-gradient(180deg, #f8fbff 0%, #edf4fb 100%);
 }
 
 .chat-container {
   display: grid;
+  gap: 18px;
+  width: min(960px, 100%);
+  min-height: calc(100vh - 48px);
+  margin: 0 auto;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 28px;
+  box-shadow: 0 30px 70px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+.chat-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 16px;
-  width: min(920px, 100%);
-  min-height: 70vh;
-  padding: 24px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 18px 40px rgba(31, 41, 55, 0.08);
+}
+
+.chat-caption {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #64748b;
 }
 
 .chat-header {
-  display: grid;
-  gap: 6px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 4px 0;
 }
 
 .chat-header h2 {
   margin: 0;
-  color: #243046;
+  color: #0f172a;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+}
+
+.chat-kicker {
+  margin: 0 0 6px;
+  color: #475569;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .messages {
   display: grid;
-  gap: 12px;
-  min-height: 320px;
-  max-height: 56vh;
-  padding: 16px;
+  align-content: start;
+  gap: 14px;
+  min-height: 360px;
+  max-height: 60vh;
+  padding: 22px 18px;
   overflow-y: auto;
-  border-radius: 16px;
-  background: #f8faff;
-  border: 1px solid #d9e1ef;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.92)),
+    linear-gradient(135deg, rgba(191, 219, 254, 0.28), rgba(226, 232, 240, 0.2));
+  border: 1px solid rgba(148, 163, 184, 0.22);
 }
 
 .message-bubble {
   display: grid;
-  gap: 6px;
+  gap: 8px;
   max-width: min(75%, 520px);
-  padding: 14px 16px;
-  border-radius: 16px;
+  padding: 14px 16px 12px;
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 .my-message {
   justify-self: end;
-  background: #d7f7df;
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: #f8fafc;
+  border-bottom-right-radius: 8px;
 }
 
 .other-message {
   justify-self: start;
-  background: #edf2ff;
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-bottom-left-radius: 8px;
 }
 
 .message-author,
@@ -340,27 +385,42 @@ export default {
 
 .message-author {
   font-weight: 700;
-  color: #243046;
+  color: inherit;
+  opacity: 0.85;
 }
 
 .message-text {
-  color: #334155;
+  color: inherit;
   white-space: pre-wrap;
+  line-height: 1.6;
 }
 
 .timestamp {
-  color: #64748b;
+  color: inherit;
+  opacity: 0.7;
   text-align: right;
 }
 
+.composer-shell {
+  padding: 6px 0 0;
+}
+
 .home-button {
-  align-self: flex-start;
   padding: 10px 16px;
-  border: none;
-  border-radius: 12px;
-  background: #334155;
-  color: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #0f172a;
+  font-weight: 700;
   cursor: pointer;
+}
+
+.home-button:hover {
+  background: #ffffff;
+}
+
+.message {
+  color: #64748b;
 }
 
 .message--error {
@@ -369,12 +429,19 @@ export default {
 
 @media (max-width: 640px) {
   .chat-wrapper {
-    padding: 14px;
+    padding: 12px;
   }
 
   .chat-container {
+    min-height: calc(100vh - 24px);
     padding: 16px;
-    min-height: 72vh;
+    border-radius: 20px;
+  }
+
+  .chat-topbar,
+  .chat-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .message-bubble {
