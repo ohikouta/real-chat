@@ -1,253 +1,349 @@
 <template>
-  <div class="chat-wrapper">
+  <section class="chat-wrapper">
     <button @click="goToHome" class="home-button">Home</button>
+
     <div class="chat-container">
-      <h2>Chat with {{ chatPartnerName }}</h2>
+      <div class="chat-header">
+        <h2>{{ chatPartnerName }}とのDM</h2>
+        <p v-if="loadError" class="message message--error">{{ loadError }}</p>
+      </div>
+
       <div class="messages" ref="messagesContainer">
-        <div 
-          v-for="message in messages" 
+        <p v-if="isLoading" class="message">メッセージを読み込み中です...</p>
+        <p v-else-if="messages.length === 0" class="message">
+          まだメッセージはありません。最初のDMを送ってみましょう。
+        </p>
+
+        <div
+          v-for="message in messages"
           :key="message.id"
+          class="message-bubble"
           :class="{
-            'my-message': message.senderId === currentUser.uid,
-            'other-message': message.senderId !== currentUser.uid
+            'my-message': message.senderId === currentUser?.uid,
+            'other-message': message.senderId !== currentUser?.uid
           }"
         >
-          <p>
-            <strong>{{ message.senderName }}:</strong> {{ message.text }}
-          </p>
-          <small class="timestamp">{{ formatTimestamp(message.timestamp) }}</small>
+          <p class="message-author">{{ message.senderName }}</p>
+          <p class="message-text">{{ message.text }}</p>
+          <small class="timestamp">{{ formatTimestamp(message.createdAt) }}</small>
         </div>
       </div>
-      <div class="input-container">
-        <!-- 送信者によって違うクラスを割り当てる -->
-        <input v-model="newMessage" placeholder="Type your message" />
-        <button @click="sendMessage">Send</button>
-      </div>
+
+      <p v-if="sendError" class="message message--error">{{ sendError }}</p>
+      <MessageInput @send-message="sendMessage" />
     </div>
-  </div>
-  </template>
-  
-  <script>
-  import { db } from '../firebaseConfig';
-  import { collection, addDoc, onSnapshot, query, where, orderBy } from 'firebase/firestore';
-  import { getDoc, doc } from 'firebase/firestore';
-  import { getAuth } from 'firebase/auth';
-  import { serverTimestamp } from 'firebase/firestore';
+  </section>
+</template>
 
-  
-  export default {
-    data() {
-      return {
-        messages: [],
-        newMessage: '',
-        currentUser: getAuth().currentUser,
-        chatPartnerId: '',
-        chatPartnerName: '',
-      };
+<script>
+import { getAuth } from 'firebase/auth';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  where
+} from 'firebase/firestore';
+import MessageInput from '../components/MessageInput.vue';
+import { db } from '../firebaseConfig';
+
+function generateChatId(userId1, userId2) {
+  if (!userId1 || !userId2) {
+    throw new Error('chatId の生成には 2 つの UID が必要です');
+  }
+
+  const [uidA, uidB] = [String(userId1), String(userId2)].sort();
+
+  if (uidA === uidB) {
+    throw new Error('同一ユーザー間の chatId は生成できません');
+  }
+
+  return `dm:v1:${uidA.length}:${uidA}|${uidB.length}:${uidB}`;
+}
+
+export default {
+  name: 'PrivateChatView',
+  components: {
+    MessageInput
+  },
+  data() {
+    return {
+      messages: [],
+      currentUser: null,
+      chatPartnerId: '',
+      chatPartnerName: '相手ユーザー',
+      isLoading: true,
+      loadError: '',
+      sendError: '',
+      unsubscribeMessages: null
+    };
+  },
+  async created() {
+    this.currentUser = getAuth().currentUser;
+    this.chatPartnerId = this.$route.params.userId;
+
+    if (!this.currentUser || !this.chatPartnerId) {
+      this.loadError = 'DMを開くためのユーザー情報が不足しています。';
+      this.isLoading = false;
+      return;
+    }
+
+    await this.fetchChatPartnerName();
+    this.subscribeMessages();
+  },
+  beforeUnmount() {
+    if (this.unsubscribeMessages) {
+      this.unsubscribeMessages();
+    }
+  },
+  methods: {
+    currentChatId() {
+      return generateChatId(this.currentUser.uid, this.chatPartnerId);
     },
-    async created() {
-      this.chatPartnerId = this.$route.params.userId;
-      console.log('取れているかを確認する---->>>:', this.chatPartnerId);
 
-      console.log('Chat partner ID:', this.chatPartnerId);
-      const chatId = this.generateChatId(this.currentUser.uid, this.chatPartnerId);
-
-      // Firestoreから特定のチャットメッセージをリアルタイムで取得
+    subscribeMessages() {
       const messagesQuery = query(
-        collection(db, "messages"),
-        where("chatId", "==", chatId),
-        orderBy('timestamp', 'asc')
+        collection(db, 'directMessages'),
+        where('chatId', '==', this.currentChatId()),
+        orderBy('createdAt', 'asc')
       );
 
-      onSnapshot(messagesQuery, (snapshot) => {
-        this.messages = snapshot.docs.map((doc) => ({
-          ...doc.data(),
-          timestamp: doc.data().timestamp?.toDate() || new Date()
-        }));
-        this.scrollToBottom();
-      });
+      this.unsubscribeMessages = onSnapshot(
+        messagesQuery,
+        (snapshot) => {
+          this.messages = snapshot.docs.map((messageDoc) => {
+            const data = messageDoc.data();
 
-      // チャット相手の情報を取得
-      await this.fetchChatPartnerName();
-
-    },
-    methods: {
-      // chatIdを生成する関数
-      generateChatId(userId1, userId2) {
-        return [userId1, userId2].sort().join('_');
-      },
-
-      goToHome() {
-        this.$router.push('/');
-      },
-
-      // チャット相手の名前をFirestoreから取得
-      async fetchChatPartnerName() {
-        if (!this.chatPartnerId) {
-          console.log('checkckckckckk')
-          console.error("chatPartnerId is undefined or null");
-          this.chatPartnerName = "Unknown User";
-          return;
-        }
-
-        const userDoc = doc(db, "users", this.chatPartnerId);
-        const docSnap = await getDoc(userDoc);
-
-        if (docSnap.exists()) {
-          this.chatPartnerName = docSnap.data().username || 'Anonymous';
-        } else {
-          console.log("No such user!");
-          this.chatPartnerName = "Unknown User";
-        }
-      },
-
-      // メッセージ送信
-      async sendMessage() {
-        const chatId = this.generateChatId(this.currentUser.uid, this.chatPartnerId);
-
-        if (!this.newMessage.trim()) {
-          alert('メッセージを入力してください');
-          return;
-        }
-
-        // Firestoreからユーザーの名前を取得
-        const userDoc = doc(db, "users", this.currentUser.uid);
-        const userSnap = await getDoc(userDoc);
-        let senderName = "Anonymous"; // デフォルトの名前
-        if (userSnap.exists()) {
-          senderName = userSnap.data().username || "Anonymous";
-        }
-
-        const messageData = {
-          text: this.newMessage.trim(),
-          senderId: this.currentUser.uid,
-          senderName: senderName, 
-          receiverId: this.chatPartnerId,
-          chatId: chatId,  // ユニークなチャットIDを保存
-          timestamp: serverTimestamp(),
-          participants: [this.currentUser.uid, this.chatPartnerId]
-        };
-
-        try {
-          await addDoc(collection(db, "messages"), messageData);
-          this.newMessage = "";
+            return {
+              id: messageDoc.id,
+              text: data.text || '',
+              senderId: data.senderId || '',
+              senderName: data.senderName || '匿名ユーザー',
+              receiverId: data.receiverId || '',
+              chatId: data.chatId || '',
+              createdAt: data.createdAt || null
+            };
+          });
+          this.isLoading = false;
+          this.loadError = '';
           this.scrollToBottom();
-        } catch (error) {
-          console.error('メッセージ送信エラー:', error);
+        },
+        (error) => {
+          console.error('DM読み込みエラー:', error);
+          this.loadError = 'DMの読み込みに失敗しました。時間を置いて再度お試しください。';
+          this.isLoading = false;
         }
-      },
-      formatTimestamp(timestamp) {
-        const date = new Date(timestamp);
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
-      },
-      scrollToBottom() {
-        this.$nextTick(() => {
-          const container = this.$refs.messagesContainer;
-          container.scrollTop = container.scrollHeight;
-        });
-      },
+      );
     },
-  };
-  </script>
 
-  <style scoped>
+    goToHome() {
+      this.$router.push('/');
+    },
+
+    async fetchChatPartnerName() {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', this.chatPartnerId));
+
+        if (!userDoc.exists()) {
+          this.chatPartnerName = 'Unknown User';
+          return;
+        }
+
+        const userData = userDoc.data();
+        this.chatPartnerName = userData.username || userData.email || '匿名ユーザー';
+      } catch (error) {
+        console.error('チャット相手取得エラー:', error);
+        this.chatPartnerName = 'Unknown User';
+      }
+    },
+
+    async resolveSenderName() {
+      if (this.currentUser.displayName) {
+        return this.currentUser.displayName;
+      }
+
+      try {
+        const userSnap = await getDoc(doc(db, 'users', this.currentUser.uid));
+        if (!userSnap.exists()) {
+          return this.currentUser.email || '匿名ユーザー';
+        }
+
+        const userData = userSnap.data();
+        return userData.username || userData.email || this.currentUser.email || '匿名ユーザー';
+      } catch (error) {
+        console.error('送信者名取得エラー:', error);
+        return this.currentUser.email || '匿名ユーザー';
+      }
+    },
+
+    async sendMessage(messageText) {
+      this.sendError = '';
+
+      if (!this.currentUser) {
+        this.sendError = '送信するにはログインが必要です。';
+        return;
+      }
+
+      const trimmedMessage = messageText.trim();
+      if (!trimmedMessage) {
+        this.sendError = 'メッセージを入力してください。';
+        return;
+      }
+
+      try {
+        const senderName = await this.resolveSenderName();
+
+        await addDoc(collection(db, 'directMessages'), {
+          text: trimmedMessage,
+          senderId: this.currentUser.uid,
+          senderName,
+          receiverId: this.chatPartnerId,
+          chatId: this.currentChatId(),
+          createdAt: serverTimestamp()
+        });
+
+        this.scrollToBottom();
+      } catch (error) {
+        console.error('メッセージ送信エラー:', error);
+        this.sendError = 'メッセージ送信に失敗しました。時間を置いて再度お試しください。';
+      }
+    },
+
+    formatTimestamp(timestamp) {
+      if (!timestamp?.toDate) {
+        return '送信直後';
+      }
+
+      const date = timestamp.toDate();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    },
+
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const container = this.$refs.messagesContainer;
+        if (container) {
+          container.scrollTop = container.scrollHeight;
+        }
+      });
+    }
+  }
+};
+</script>
+
+<style scoped>
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  padding: 20px;
+  background: #eef2f8;
+}
+
+.chat-container {
+  display: grid;
+  gap: 16px;
+  width: min(920px, 100%);
+  min-height: 70vh;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(31, 41, 55, 0.08);
+}
+
+.chat-header {
+  display: grid;
+  gap: 6px;
+}
+
+.chat-header h2 {
+  margin: 0;
+  color: #243046;
+}
+
+.messages {
+  display: grid;
+  gap: 12px;
+  min-height: 320px;
+  max-height: 56vh;
+  padding: 16px;
+  overflow-y: auto;
+  border-radius: 16px;
+  background: #f8faff;
+  border: 1px solid #d9e1ef;
+}
+
+.message-bubble {
+  display: grid;
+  gap: 6px;
+  max-width: min(75%, 520px);
+  padding: 14px 16px;
+  border-radius: 16px;
+}
+
+.my-message {
+  justify-self: end;
+  background: #d7f7df;
+}
+
+.other-message {
+  justify-self: start;
+  background: #edf2ff;
+}
+
+.message-author,
+.message-text,
+.message {
+  margin: 0;
+}
+
+.message-author {
+  font-weight: 700;
+  color: #243046;
+}
+
+.message-text {
+  color: #334155;
+  white-space: pre-wrap;
+}
+
+.timestamp {
+  color: #64748b;
+  text-align: right;
+}
+
+.home-button {
+  align-self: flex-start;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 12px;
+  background: #334155;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.message--error {
+  color: #c0364b;
+}
+
+@media (max-width: 640px) {
   .chat-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f0f0f0;
+    padding: 14px;
   }
 
   .chat-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: #f5f5f5;
-    padding: 20px;
-    width: 80%;
-    max-width: 1200px;
-    border-radius: 8px;
-    height: 80%;
-    box-shadow: 0, 4px, 8px, rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    min-height: 72vh;
   }
 
-  .messages {
-    flex: 1;
-    overflow-y: auto;
+  .message-bubble {
+    max-width: 100%;
   }
-
-  .my-message {
-    background-color: #d4f7dc;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 10px;
-    max-width: 60%;
-    align-self: flex-end;
-  }
-
-  .other-message {
-    background-color: #f0f0f0;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 10px;
-    max-width: 60%;
-    align-self: flex-start;
-  }
-
-  .chat-container div {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .input-container {
-    display: flex;
-    align-items: center;
-  }
-
-  input {
-    width: calc(100% - 80px);
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-
-  .home-button {
-    align-self: flex-start;
-    margin: 10px;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .home-button:hover {
-    background-color: #0056b3;
-  }
-  
-  button {
-    padding: 10px 20px;
-    margin-left: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #0056b3;
-  }
-
-  .timestamp {
-    font-size: 0.8rem;
-    color: #666;
-    text-align: right;
-    margin-top: 5px;
-  }
-  </style>
+}
+</style>

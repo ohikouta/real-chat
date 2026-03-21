@@ -1,13 +1,17 @@
 <template>
   <div class="message-input">
-    <input v-model="message" @keyup.enter="handleSend" placeholder="Type a message..." />
-    <button @click="handleSend">Send</button>
-    <button @click="increment">Count is: {{ count }}</button>
+    <input
+      v-model="message"
+      @keyup.enter="handleSend"
+      placeholder="メッセージを入力..."
+    />
+    <button @click="handleSend">送信</button>
   </div>
 </template>
 
 <script>
 export default {
+  name: 'MessageInput',
   data() {
     return {
       message: ''

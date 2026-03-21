@@ -164,3 +164,10 @@
 - 参加者はスレッド投稿者とコメント投稿者を `authorId` 優先で集約し、重複を除いて表示する方針に整理
 - `authorName` が欠ける場合は `匿名ユーザー` を表示するフォールバックで統一
 - `docs/routes.md` と `docs/session-memory/summary.md` を `#42` の実装状況へ同期
+
+## 2026-03-22T01:00:00Z
+
+- Issue `#43` の着手として `PrivateChatView` を `directMessages` 前提へ切り替え
+- DM 一覧購読は `chatId + createdAt`、新規送信は `directMessages.createdAt` を使う実装へ寄せた
+- `MessageInput` の未定義状態を削除し、DM 送信用の最小コンポーネントへ整理
+- `UserList` の `users/{userId}/messages/latest` は補助表示として壊れない読み取りへ調整

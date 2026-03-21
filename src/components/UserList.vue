@@ -6,7 +6,9 @@
         <img :src="user.profileImageUrl || defaultProfileImage" alt="Profile Image" class="profile-image" />
         <h3>{{ user.username || "匿名ユーザー" }}</h3>
         <p>{{ user.email }}</p>
-        <p v-if="user.latestMessage">Last message: {{ user.latestMessage.content }} - {{ user.latestMessage.timestamp }}</p>
+        <p v-if="user.latestMessage">
+          Last message: {{ user.latestMessage.text || user.latestMessage.content || 'メッセージあり' }}
+        </p>
         <!-- オンライン・オフラインのステータス表示 -->
         <p class="status" :class="{ online: user.isOnline, offline: !user.isOnline }">
           {{ user.isOnline ? "Online" : "Offline" }}
@@ -35,7 +37,6 @@ export default {
 
       // 最新メッセージ取得
       const latestMessageDoc = await getDoc(doc(db, `users/${docSnapshot.id}/messages`, "latest"));
-      console.log("Latest message:", latestMessageDoc.data());
       if (latestMessageDoc.exists()) {
         userData.latestMessage = latestMessageDoc.data();
       }
