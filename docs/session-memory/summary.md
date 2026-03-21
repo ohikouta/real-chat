@@ -1,8 +1,8 @@
 # Project Summary
 
-- Updated At: 2026-03-15T15:00:46Z
-- Branch: issue-47-view-route-cleanup-v2
-- HEAD: 35757e86
+- Updated At: 2026-03-21T00:27:14Z
+- Branch: issue-40-threads
+- HEAD: e117e26f
 - Updated By: Codex
 
 ## Current Status
@@ -38,6 +38,12 @@
 - `HomeView` の重複していた Firestore 購読 / 送信責務を削除し、`ChatView` を廃止
 - `src/router/index.js` の route name と guard 判定を整理し、`docs/routes.md` など関連ドキュメントを同期
 - `npm run lint` を実行し、lint error なしを確認
+- `#52` が merge され、`#47` の画面責務整理が `main` に取り込まれた
+- `#40` の着手として `/timeline` を追加し、`threads` 投稿フォームと新着一覧を `TimelineView` に実装
+- `threads` 投稿時に `title` `body` `tags` `authorId` `authorName` `createdAt` `updatedAt` を保存するよう実装
+- `Header` に `Timeline` 導線を追加し、`docs/routes.md` を現行ルーティングへ同期
+- `LandingHero` の参照画像 `src/assets/sample_chat.png` を追加し、`npm run build` が通る状態へ復旧
+- `npm run build` を実行し、bundle size warning のみで build 成功を確認
 
 ## Current Decisions
 
@@ -59,11 +65,12 @@
 - `PrivateChat` の時系列表示は `directMessages.createdAt` を基準にする
 - route 直結の画面は `views` を入口にし、再利用 UI は `components` に置く
 - route guard は path 文字列の分岐より `meta` ベースを優先する
+- スレッド一覧はまず `threads` を `createdAt desc` で購読し、タグ絞り込みや詳細遷移は後続 Issue で段階的に足す
 
 ## Next Actions
 
-- Issue `#47` の差分を branch / PR にまとめる
-- `#47` のレビュー後、`#46` または `#44` の着手順を決める
+- Issue `#40` の差分を branch / PR にまとめる
+- `#40` のレビュー後、`#41` のスレッド詳細 / コメント機能へ進む
 
 ## Reference Logs
 

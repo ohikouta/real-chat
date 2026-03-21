@@ -4,6 +4,7 @@
       <router-link to="/" class="brand">Real Chat</router-link>
       <nav class="nav">
         <router-link to="/" class="nav__link">Home</router-link>
+        <router-link to="/timeline" class="nav__link">Timeline</router-link>
         <router-link to="/users" class="nav__link">Users</router-link>
         <router-link to="/profile" class="nav__link">Profile</router-link>
       </nav>
@@ -30,7 +31,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
 
 export default {
-  name: 'Header',
+  name: 'AppHeader',
   setup() {
     const router = useRouter();
     const user = ref(null);
