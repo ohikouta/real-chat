@@ -157,3 +157,10 @@
 - `TimelineView` の `詳細を見る` にスレッドタイトル込みの `aria-label` を追加
 - `docs/routes.md` のチェックリストから将来 Issue `#42` の項目を分離し、今後対応セクションへ移動
 - `npm run lint` と `npm run build` を再実行し、warning のみで通過を確認
+
+## 2026-03-21T15:05:00Z
+
+- Issue `#42` の着手として `ThreadDetailView` に参加者一覧を追加
+- 参加者はスレッド投稿者とコメント投稿者を `authorId` 優先で集約し、重複を除いて表示する方針に整理
+- `authorName` が欠ける場合は `匿名ユーザー` を表示するフォールバックで統一
+- `docs/routes.md` と `docs/session-memory/summary.md` を `#42` の実装状況へ同期

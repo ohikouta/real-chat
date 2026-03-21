@@ -19,6 +19,26 @@
       </article>
       <p v-else class="message">スレッドを読み込み中です...</p>
 
+      <section v-if="thread" class="participants-section">
+        <div class="participants-section__header">
+          <h2>参加者</h2>
+          <p class="participants-section__count">{{ participants.length }}人</p>
+        </div>
+
+        <p v-if="commentsLoading" class="message">コメント参加者を読み込み中です...</p>
+        <ul v-else class="participant-list">
+          <li v-for="participant in participants" :key="participant.key" class="participant-card">
+            <p class="participant-name">{{ participant.name }}</p>
+            <div class="participant-badges">
+              <span v-if="participant.isThreadAuthor" class="participant-badge">投稿者</span>
+              <span v-if="participant.commentCount > 0" class="participant-badge participant-badge--subtle">
+                コメント {{ participant.commentCount }}件
+              </span>
+            </div>
+          </li>
+        </ul>
+      </section>
+
       <section class="comment-composer">
         <h2>コメントを投稿</h2>
         <form @submit.prevent="submitComment" class="comment-form">
@@ -96,6 +116,63 @@ export default {
       return Boolean(thread.value) && !threadError.value;
     });
 
+    const participants = computed(() => {
+      const participantMap = new Map();
+
+      const upsertParticipant = ({ userId, name, isThreadAuthor = false, isCommentAuthor = false }) => {
+        const normalizedName = name || '匿名ユーザー';
+        const key = userId ? `user:${userId}` : `name:${normalizedName}`;
+        const current = participantMap.get(key) || {
+          key,
+          userId: userId || '',
+          name: normalizedName,
+          isThreadAuthor: false,
+          commentCount: 0
+        };
+
+        current.isThreadAuthor = current.isThreadAuthor || isThreadAuthor;
+        if (!current.userId && userId) {
+          current.userId = userId;
+        }
+        if (current.name === '匿名ユーザー' && normalizedName !== '匿名ユーザー') {
+          current.name = normalizedName;
+        }
+        if (isCommentAuthor) {
+          current.commentCount += 1;
+        }
+
+        participantMap.set(key, current);
+      };
+
+      if (thread.value) {
+        upsertParticipant({
+          userId: thread.value.authorId,
+          name: thread.value.authorName,
+          isThreadAuthor: true
+        });
+      }
+
+      comments.value.forEach((comment) => {
+        upsertParticipant({
+          userId: comment.authorId,
+          name: comment.authorName,
+          isCommentAuthor: true
+        });
+      });
+
+      return Array.from(participantMap.values()).sort((left, right) => {
+        if (left.isThreadAuthor !== right.isThreadAuthor) {
+          return left.isThreadAuthor ? -1 : 1;
+        }
+
+        if (left.commentCount !== right.commentCount) {
+          return right.commentCount - left.commentCount;
+        }
+
+        return left.name.localeCompare(right.name, 'ja');
+      });
+    });
+
     const cleanupSubscriptions = () => {
       if (unsubscribeThread) {
         unsubscribeThread();
@@ -133,6 +210,7 @@ export default {
             title: data.title || '',
             body: data.body || '',
             tags: Array.isArray(data.tags) ? data.tags : [],
+            authorId: data.authorId || '',
             authorName: data.authorName || '匿名ユーザー',
             createdAt: data.createdAt || null
           };
@@ -160,6 +238,7 @@ export default {
             return {
               id: commentDoc.id,
               body: data.body || '',
+              authorId: data.authorId || '',
               authorName: data.authorName || '匿名ユーザー',
               createdAt: data.createdAt || null
             };
@@ -278,6 +357,7 @@ export default {
     return {
       thread,
       comments,
+      participants,
       commentBody,
       threadError,
       commentsError,
@@ -324,9 +404,25 @@ export default {
   padding: 28px;
 }
 
+.participants-section {
+  display: grid;
+  gap: 16px;
+  padding: 28px;
+  background: #f6f8ff;
+  border: 1px solid #dbe2ff;
+  border-radius: 20px;
+}
+
 .thread-meta,
 .comment-meta,
 .comments-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.participants-section__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -339,7 +435,13 @@ export default {
   color: #35469c;
 }
 
+.participants-section__count {
+  margin: 0;
+  color: #667085;
+}
+
 .thread-card h1,
+.participants-section h2,
 .comment-composer h2,
 .comments-section h2 {
   margin: 0;
@@ -407,6 +509,7 @@ export default {
   gap: 16px;
 }
 
+.participant-list,
 .comment-list,
 .tag-list {
   list-style: none;
@@ -414,13 +517,54 @@ export default {
   padding: 0;
 }
 
+.participant-list,
 .comment-list {
   display: grid;
   gap: 16px;
 }
 
+.participant-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #dbe2ff;
+}
+
 .comment-card {
   padding: 22px;
+}
+
+.participant-name {
+  margin: 0;
+  font-weight: 700;
+  color: #243046;
+}
+
+.participant-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.participant-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #4c5dd8;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.participant-badge--subtle {
+  background: #eef1ff;
+  color: #4c5dd8;
 }
 
 .tag-list {
@@ -454,16 +598,23 @@ export default {
   }
 
   .thread-card,
+  .participants-section,
   .comment-composer,
   .comment-card {
     padding: 20px;
   }
 
   .thread-meta,
+  .participants-section__header,
+  .participant-card,
   .comment-meta,
   .comments-section__header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .participant-badges {
+    justify-content: flex-start;
   }
 
   .comment-actions {
