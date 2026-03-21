@@ -9,15 +9,15 @@
 
 ## Obsidian ノート
 - このプロジェクトに関する補足メモは Obsidian vault に保存されている。
-- vault の場所: `/Users/koutaohi/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-private`
-- このプロジェクトの主要ノート:
-  - `/Users/koutaohi/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-private/vue-chat/README.md`
-  - `/Users/koutaohi/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-private/vue-chat/06_Dev/Codex運用ガイド.md`
-  - `/Users/koutaohi/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-private/vue-chat/06_Dev/GitHub運用方針.md`
-  - `/Users/koutaohi/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-private/vue-chat/06_Dev/開発メモ.md`
-  - `/Users/koutaohi/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-private/タスク.md`
-  - `/Users/koutaohi/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-private/vue-chat/08_Logs/README.md`
-  - `/Users/koutaohi/Library/Mobile Documents/iCloud~md~obsidian/Documents/obsidian-private/vue-chat/09_Decisions/README.md`
+- vault の具体的なローカルパスは各自の環境に依存するため、このリポジトリ内では絶対パスを固定しないこと。
+- このプロジェクトの主要ノート（vault ルートを `${VAULT_ROOT}` とした場合の相対パス例）:
+  - `${VAULT_ROOT}/vue-chat/README.md`
+  - `${VAULT_ROOT}/vue-chat/06_Dev/Codex運用ガイド.md`
+  - `${VAULT_ROOT}/vue-chat/06_Dev/GitHub運用方針.md`
+  - `${VAULT_ROOT}/vue-chat/06_Dev/開発メモ.md`
+  - `${VAULT_ROOT}/タスク.md`
+  - `${VAULT_ROOT}/vue-chat/08_Logs/README.md`
+  - `${VAULT_ROOT}/vue-chat/09_Decisions/README.md`
 - このリポジトリで作業を始める際は、必要に応じて上記ノートを参照してよい。
 - `タスク.md` では `vue-chat` レーンを、このプロジェクトの開発タスク整理の参照元として扱うこと。
 - まず `vue-chat/README.md` を起点にし、実装ルールは `06_Dev/Codex運用ガイド.md` と `06_Dev/GitHub運用方針.md` を確認すること。
@@ -78,7 +78,5 @@
 - Obsidian 側に重要な設計判断や運用ルールを追加した場合は、必要に応じて本ファイルから参照先を更新する。
 - セッション継続が必要な作業では、区切りごとに `docs/session-memory/summary.md` を最新化し、`docs/session-memory/audit.md` に実施ログを追記すること。次回開始時は `summary.md` を起点にし、必要に応じて `audit.md` `failure-notes.md` と履歴も遡って進捗を把握する。
 - Vue / React の設計文書は、書き始める前に「主軸はページかコンポーネントか」「成果物に含めるセクション」「含めない情報」「レビュー観点」を先に固定すること。
-- マルチエージェントで進める場合は、`docs/multi-agent-orchestration.md` を参照し、原則 `1 Issue = 1 子エージェント` で担当を分けること。
-- 並列作業では branch だけでなく worktree も分けること。tmux の pane 分割だけで同じ作業ディレクトリを共有しないこと。
 - マルチエージェントで進める場合は、`docs/multi-agent-orchestration.md` を参照し、原則 `1 Issue = 1 子エージェント` で担当を分けること。
 - 並列作業では branch だけでなく worktree も分けること。tmux の pane 分割だけで同じ作業ディレクトリを共有しないこと。
