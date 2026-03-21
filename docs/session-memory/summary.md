@@ -1,8 +1,8 @@
 # Project Summary
 
-- Updated At: 2026-03-21T14:07:45Z
-- Branch: issue-41-thread-detail
-- HEAD: e45b1402
+- Updated At: 2026-03-22T00:05:00Z
+- Branch: issue-42-thread-participants
+- HEAD: 62a9f5e5
 - Updated By: Codex
 
 ## Current Status
