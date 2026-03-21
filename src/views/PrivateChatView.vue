@@ -92,6 +92,13 @@ export default {
       return;
     }
 
+    if (this.currentUser.uid === this.chatPartnerId) {
+      this.chatPartnerName = '自分自身';
+      this.loadError = '自分自身とのDMは開けません。';
+      this.isLoading = false;
+      return;
+    }
+
     await this.fetchChatPartnerName();
     this.subscribeMessages();
   },
