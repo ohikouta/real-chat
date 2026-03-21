@@ -76,6 +76,7 @@
               <router-link
                 class="thread-card__link"
                 :to="{ name: 'ThreadDetail', params: { postId: thread.id } }"
+                :aria-label="`${thread.title} の詳細を見る`"
               >
                 詳細を見る
               </router-link>

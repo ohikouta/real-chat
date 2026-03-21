@@ -35,7 +35,11 @@
           <p v-if="commentError" class="message message--error">{{ commentError }}</p>
 
           <div class="comment-actions">
-            <button type="submit" class="primary-button" :disabled="isSubmittingComment">
+            <button
+              type="submit"
+              class="primary-button"
+              :disabled="isSubmittingComment || !canSubmitComment"
+            >
               {{ isSubmittingComment ? '投稿中...' : 'コメントする' }}
             </button>
           </div>
@@ -68,7 +72,7 @@
 </template>
 
 <script>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { useRoute } from 'vue-router';
 import { auth, db } from '../firebaseConfig';
@@ -77,7 +81,6 @@ export default {
   name: 'ThreadDetailView',
   setup() {
     const route = useRoute();
-    const threadId = route.params.postId;
     const thread = ref(null);
     const comments = ref([]);
     const commentBody = ref('');
@@ -89,7 +92,32 @@ export default {
     let unsubscribeThread = null;
     let unsubscribeComments = null;
 
-    const loadThread = () => {
+    const canSubmitComment = computed(() => {
+      return Boolean(thread.value) && !threadError.value;
+    });
+
+    const cleanupSubscriptions = () => {
+      if (unsubscribeThread) {
+        unsubscribeThread();
+        unsubscribeThread = null;
+      }
+
+      if (unsubscribeComments) {
+        unsubscribeComments();
+        unsubscribeComments = null;
+      }
+    };
+
+    const resetThreadState = () => {
+      thread.value = null;
+      comments.value = [];
+      threadError.value = '';
+      commentsError.value = '';
+      commentError.value = '';
+      commentsLoading.value = true;
+    };
+
+    const loadThread = (threadId) => {
       unsubscribeThread = onSnapshot(
         doc(db, 'threads', threadId),
         (snapshot) => {
@@ -117,7 +145,7 @@ export default {
       );
     };
 
-    const loadComments = () => {
+    const loadComments = (threadId) => {
       const commentsQuery = query(
         collection(db, 'threads', threadId, 'comments'),
         orderBy('createdAt', 'asc')
@@ -147,6 +175,13 @@ export default {
       );
     };
 
+    const subscribeThreadDetail = (threadId) => {
+      cleanupSubscriptions();
+      resetThreadState();
+      loadThread(threadId);
+      loadComments(threadId);
+    };
+
     const resolveAuthorName = async (user) => {
       if (user.displayName) {
         return user.displayName;
@@ -174,6 +209,11 @@ export default {
         return;
       }
 
+      if (!canSubmitComment.value) {
+        commentError.value = '存在しないスレッドにはコメントできません。';
+        return;
+      }
+
       const currentUser = auth.currentUser;
       if (!currentUser) {
         commentError.value = 'コメントするにはログインが必要です。';
@@ -185,7 +225,7 @@ export default {
       try {
         const authorName = await resolveAuthorName(currentUser);
 
-        await addDoc(collection(db, 'threads', threadId, 'comments'), {
+        await addDoc(collection(db, 'threads', route.params.postId, 'comments'), {
           body: commentBody.value.trim(),
           authorId: currentUser.uid,
           authorName,
@@ -216,19 +256,23 @@ export default {
       }).format(timestamp.toDate());
     };
 
-    onMounted(() => {
-      loadThread();
-      loadComments();
-    });
+    watch(
+      () => route.params.postId,
+      (threadId) => {
+        if (!threadId) {
+          cleanupSubscriptions();
+          resetThreadState();
+          threadError.value = '対象のスレッドが見つかりません。';
+          return;
+        }
+
+        subscribeThreadDetail(threadId);
+      },
+      { immediate: true }
+    );
 
     onBeforeUnmount(() => {
-      if (unsubscribeThread) {
-        unsubscribeThread();
-      }
-
-      if (unsubscribeComments) {
-        unsubscribeComments();
-      }
+      cleanupSubscriptions();
     });
 
     return {
@@ -240,6 +284,7 @@ export default {
       commentError,
       commentsLoading,
       isSubmittingComment,
+      canSubmitComment,
       submitComment,
       formatDate
     };

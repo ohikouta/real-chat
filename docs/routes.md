@@ -55,7 +55,10 @@
 
 ## 実装反映チェックリスト
 
-1. `ThreadDetail` 画面から参加者一覧を表示できるようにする
-2. `beforeEach` の認証必須判定が `ThreadDetail` を含む current route と一致していることを確認する
-3. `Route Name` を表記ゆれなく統一（`Users`, `Login`, `Register`, `Profile`, `Timeline`, `ThreadDetail`）
-4. `FLOW_Navigation` と差分がないことを確認
+1. `beforeEach` の認証必須判定が `ThreadDetail` を含む current route と一致していることを確認する
+2. `Route Name` を表記ゆれなく統一（`Users`, `Login`, `Register`, `Profile`, `Timeline`, `ThreadDetail`）
+3. `FLOW_Navigation` と差分がないことを確認
+
+## 今後対応すること
+
+1. `ThreadDetail` 画面から参加者一覧を表示できるようにする（#42）

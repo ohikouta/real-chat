@@ -48,6 +48,8 @@
 - `#41` の着手として `/timeline/:postId/thread` を追加し、`ThreadDetailView` でスレッド詳細とコメント機能を実装
 - `threads/{threadId}/comments` を `createdAt asc` で購読し、コメント投稿を `body` `authorId` `authorName` `createdAt` `updatedAt` で保存するよう実装
 - `TimelineView` から `ThreadDetail` への導線を追加し、`docs/routes.md` を詳細画面込みの状態へ同期
+- PR `#54` の Copilot レビューを受け、`ThreadDetailView` を route param 変更に追従する購読へ修正し、スレッド未存在時のコメント投稿を禁止
+- `TimelineView` の `詳細を見る` に `aria-label` を追加し、`docs/routes.md` の将来タスクを現PRのチェックリストから分離
 - `npm run lint` を実行し、lint error なしを確認
 - `npm run build` を実行し、bundle size warning のみで build 成功を確認
 
@@ -73,10 +75,11 @@
 - route guard は path 文字列の分岐より `meta` ベースを優先する
 - スレッド一覧はまず `threads` を `createdAt desc` で購読し、タグ絞り込みや詳細遷移は後続 Issue で段階的に足す
 - スレッド詳細は `threads/{threadId}` と `threads/{threadId}/comments` を別購読で扱い、コメントは `createdAt asc` 表示を基本とする
+- `ThreadDetailView` は `route.params.postId` の変化を watch し、同一コンポーネント再利用時も購読を張り直す
 
 ## Next Actions
 
-- Issue `#41` の差分を branch / PR にまとめる
+- PR `#54` の Copilot 指摘に返信し、merge 判定へ進める
 - `#41` のレビュー後、`#42` の参加者一覧を詳細画面へ追加する
 
 ## Reference Logs
