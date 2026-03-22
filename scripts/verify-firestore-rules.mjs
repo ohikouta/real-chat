@@ -256,6 +256,19 @@ async function run() {
     })
   );
 
+  await expectDenied('users update email by self', () =>
+    firestoreRequest({
+      method: 'PATCH',
+      path: `users/${alice.uid}`,
+      token: alice.idToken,
+      body: fields({
+        ...aliceProfile,
+        email: bob.email,
+        updatedAt: nowIso()
+      })
+    })
+  );
+
   const threadId = 'thread-alpha';
   const threadBody = {
     title: 'Firestore Rules の相談',
@@ -308,6 +321,20 @@ async function run() {
       body: fields({
         ...threadBody,
         body: '作成者本人の更新',
+        updatedAt: nowIso()
+      })
+    })
+  );
+
+  await expectDenied('threads update derived fields by author', () =>
+    firestoreRequest({
+      method: 'PATCH',
+      path: `threads/${threadId}`,
+      token: alice.idToken,
+      body: fields({
+        ...threadBody,
+        commentCount: 99,
+        lastCommentAt: nowIso(),
         updatedAt: nowIso()
       })
     })
@@ -395,6 +422,19 @@ async function run() {
         senderId: alice.uid,
         senderName: 'Alice',
         receiverId: charlie.uid,
+        chatId: chatId(alice.uid, charlie.uid),
+        createdAt: nowIso()
+      })
+    })
+  );
+
+  await expectDenied('directMessages mismatched chatId create', () =>
+    firestoreRequest({
+      method: 'PATCH',
+      path: 'directMessages/dm-bad-chat',
+      token: alice.idToken,
+      body: fields({
+        ...dmBody,
         chatId: chatId(alice.uid, charlie.uid),
         createdAt: nowIso()
       })

@@ -30,6 +30,24 @@ service cloud.firestore {
       return exists(/databases/$(database)/documents/users/$(userId));
     }
 
+    function authEmail() {
+      return request.auth.token.email;
+    }
+
+    function orderedUidA(userId1, userId2) {
+      return userId1 <= userId2 ? userId1 : userId2;
+    }
+
+    function orderedUidB(userId1, userId2) {
+      return userId1 <= userId2 ? userId2 : userId1;
+    }
+
+    function chatIdMatchesParticipants(chatId, userId1, userId2) {
+      let uidA = orderedUidA(userId1, userId2);
+      let uidB = orderedUidB(userId1, userId2);
+      return chatId.matches("^dm:v1:[0-9]+:" + uidA + "\\|[0-9]+:" + uidB + "$");
+    }
+
     match /users/{userId} {
       allow read: if signedIn();
 
@@ -44,6 +62,8 @@ service cloud.firestore {
           'updatedAt'
         ])
         && request.resource.data.email is string
+        && authEmail() is string
+        && request.resource.data.email == authEmail()
         && optionalString(request.resource.data, 'displayName')
         && optionalString(request.resource.data, 'username')
         && optionalString(request.resource.data, 'profileImageUrl')
@@ -62,6 +82,9 @@ service cloud.firestore {
           'updatedAt'
         ])
         && request.resource.data.email is string
+        && authEmail() is string
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.email == authEmail()
         && optionalString(request.resource.data, 'displayName')
         && optionalString(request.resource.data, 'username')
         && optionalString(request.resource.data, 'profileImageUrl')
@@ -129,6 +152,14 @@ service cloud.firestore {
         && optionalList(request.resource.data, 'tags')
         && optionalNumber(request.resource.data, 'commentCount')
         && optionalTimestamp(request.resource.data, 'lastCommentAt')
+        && (
+          !request.resource.data.keys().hasAny(['commentCount'])
+          || request.resource.data.commentCount == resource.data.commentCount
+        )
+        && (
+          !request.resource.data.keys().hasAny(['lastCommentAt'])
+          || request.resource.data.lastCommentAt == resource.data.lastCommentAt
+        )
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.updatedAt is timestamp;
 
@@ -215,6 +246,11 @@ service cloud.firestore {
         && request.resource.data.senderId is string
         && request.resource.data.receiverId is string
         && request.resource.data.senderId != request.resource.data.receiverId
+        && chatIdMatchesParticipants(
+          request.resource.data.chatId,
+          request.resource.data.senderId,
+          request.resource.data.receiverId
+        )
         && request.resource.data.senderName is string
         && request.resource.data.text is string
         && request.resource.data.createdAt is timestamp
