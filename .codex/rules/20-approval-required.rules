@@ -1,7 +1,7 @@
 # Prompt for commands that are useful but can change repo, dependencies, or remote state.
 
 prefix_rule(
-    pattern = ["git", ["add", "commit", "push", "pull", "fetch", "merge", "rebase", "switch", "checkout", "cherry-pick", "restore"]],
+    pattern = ["git", ["add", "commit", "push", "pull", "merge", "rebase", "switch", "checkout", "cherry-pick", "restore"]],
     decision = "prompt",
     justification = "Git operations that change state or sync with remotes should be reviewed each time.",
     match = [
@@ -9,7 +9,6 @@ prefix_rule(
         "git commit -m update",
         "git push origin work",
         "git pull --rebase",
-        "git fetch origin",
     ],
     not_match = [
         "git status",
@@ -83,11 +82,13 @@ prefix_rule(
 )
 
 prefix_rule(
-    pattern = ["gh", "api"],
+    pattern = ["gh", "api", "--method", ["POST", "PATCH", "PUT", "DELETE"]],
     decision = "prompt",
-    justification = "Direct GitHub API calls bypass higher-level command safety and should be reviewed.",
+    justification = "GitHub API mutations can change the official task tracker or PR state and should be reviewed.",
     match = [
-        "gh api repos/ohikouta/vue-chat/issues",
+        "gh api --method POST repos/ohikouta/vue-chat/issues",
+        "gh api --method PATCH repos/ohikouta/vue-chat/issues/56",
+        "gh api --method DELETE repos/ohikouta/vue-chat/issues/56",
     ],
 )
 
