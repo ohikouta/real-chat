@@ -21,7 +21,13 @@
       <form class="profile-form" @submit.prevent="saveProfile">
         <label class="field">
           <span>表示名</span>
-          <input v-model.trim="form.displayName" type="text" maxlength="40" placeholder="表示名を入力" />
+          <input
+            v-model.trim="form.displayName"
+            type="text"
+            maxlength="40"
+            placeholder="表示名を入力"
+            @input="markDirty"
+          />
         </label>
 
         <label class="field">
@@ -30,6 +36,7 @@
             v-model.trim="form.profileImageUrl"
             type="url"
             placeholder="https://example.com/profile.png"
+            @input="markDirty"
           />
           <small>画像 URL を直接指定できます。下のアップローダーを使っても反映されます。</small>
         </label>
@@ -75,6 +82,8 @@ export default {
         displayName: '',
         profileImageUrl: ''
       },
+      isDirty: false,
+      hasInitializedForm: false,
       isSaving: false,
       message: '',
       errorMessage: '',
@@ -123,12 +132,11 @@ export default {
         (snapshot) => {
           const profileData = snapshot.exists() ? snapshot.data() : {};
           this.profile = profileData;
-          this.form.displayName = resolveDisplayName({
-            displayName: profileData.displayName || this.user?.displayName,
-            username: profileData.username,
-            email: this.user?.email
-          });
-          this.form.profileImageUrl = resolveProfileImageUrl(profileData);
+          if (!this.hasInitializedForm || !this.isDirty) {
+            this.form.displayName = profileData.displayName || this.user?.displayName || '';
+            this.form.profileImageUrl = resolveProfileImageUrl(profileData) || this.user?.photoURL || '';
+            this.hasInitializedForm = true;
+          }
         },
         (error) => {
           console.error('プロフィール取得エラー:', error);
@@ -149,8 +157,12 @@ export default {
     }
   },
   methods: {
+    markDirty() {
+      this.isDirty = true;
+    },
     handleImageUploaded(url) {
       this.form.profileImageUrl = url;
+      this.isDirty = true;
       this.message = 'アップロードした画像をフォームへ反映しました。保存すると確定します。';
       this.errorMessage = '';
     },
@@ -187,6 +199,7 @@ export default {
           updatedAt: serverTimestamp()
         }, { merge: true });
 
+        this.isDirty = false;
         this.message = 'プロフィールを更新しました。';
       } catch (error) {
         console.error('プロフィール更新エラー:', error);
