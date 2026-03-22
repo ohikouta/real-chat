@@ -13,7 +13,7 @@ import { getAuth } from 'firebase/auth';
 import { doc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '@/firebaseConfig';
-import { getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
+import { getFirestoreErrorMessage, getStorageErrorMessage, logFirebaseError } from '../utils/firebaseError';
 
 export default {
   emits: ['imageUploaded'],
@@ -45,7 +45,7 @@ export default {
         },
         (error) => {
           logFirebaseError('プロフィール画像アップロード', error);
-          alert(getFirestoreErrorMessage(error, '画像アップロードに失敗しました。時間を置いて再度お試しください。'));
+          alert(getStorageErrorMessage(error, '画像アップロードに失敗しました。時間を置いて再度お試しください。'));
         },
         async () => {
           this.downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
