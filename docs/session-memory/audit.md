@@ -172,3 +172,12 @@
 - `MessageInput` の未定義状態を削除し、DM 送信用の最小コンポーネントへ整理
 - `UserList` の `users/{userId}/messages/latest` は補助表示として壊れない読み取りへ調整
 - `directMessages` の `chatId + createdAt` 複合インデックス定義を `firebase.json` / `firestore.indexes.json` として追加
+
+## 2026-03-22T09:45:00Z
+
+- Issue `#44` の着手として、プロフィール最小構成を `displayName` / `profileImageUrl` 中心へ整理
+- `RegisterComponent` で auth の `displayName` と `users/{uid}` を同時に初期化し、登録後は `/profile` を編集導線の起点にするよう変更
+- `ProfileDetails` をプロフィールの表示 / 編集画面へ作り替え、表示名更新、画像 URL 編集、画像アップロード導線を 1 か所に集約
+- `Header` `UserList` `TimelineView` `ThreadDetailView` `PrivateChatView` の表示名フォールバックを `displayName -> username -> email -> 匿名ユーザー` へ統一
+- `UserList` では自分自身を一覧から除外し、`users` 購読ベースで表示名・アイコン・オンライン状態を表示するよう整理
+- `npm run lint` と `npm run build` を再実行し、warning のみで通過を確認

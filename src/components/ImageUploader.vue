@@ -9,17 +9,18 @@
 </template>
 
 <script>
-import { getAuth } from "firebase/auth";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { storage } from "@/firebaseConfig";
+import { getAuth } from 'firebase/auth';
+import { doc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '@/firebaseConfig';
 
 export default {
+  emits: ['imageUploaded'],
   data() {
     return {
       file: null,
       uploadProgress: null,
-      downloadURL: null,
+      downloadURL: null
     };
   },
   methods: {
@@ -27,39 +28,40 @@ export default {
       this.file = event.target.files[0];
     },
     async uploadImage() {
-      if (!this.file) return alert("Please select an image file.");
+      if (!this.file) return alert('Please select an image file.');
 
       const auth = getAuth();
       const user = auth.currentUser;
-      if (!user) return alert("Please log in to upload a profile image.");
+      if (!user) return alert('Please log in to upload a profile image.');
 
       const storageRef = ref(storage, `profileImages/${user.uid}/profile.jpg`);
       const uploadTask = uploadBytesResumable(storageRef, this.file);
 
       uploadTask.on(
-        "state_changed",
+        'state_changed',
         (snapshot) => {
-          // 進行状況の更新
           this.uploadProgress = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0);
         },
         (error) => {
-          console.error("Upload failed:", error);
-          alert("Upload failed. Please try again.");
+          console.error('Upload failed:', error);
+          alert('Upload failed. Please try again.');
         },
         async () => {
-          // アップロード完了後にURLを取得
           this.downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          console.log("File available at", this.downloadURL);
+          console.log('File available at', this.downloadURL);
 
-          // FirestoreにURLを保存
           const db = getFirestore();
-          const userDocRef = doc(db, "users", user.uid);
-          await setDoc(userDocRef, { profileImageUrl: this.downloadURL }, { merge: true });
+          const userDocRef = doc(db, 'users', user.uid);
+          await setDoc(userDocRef, {
+            profileImageUrl: this.downloadURL,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
 
-          alert("Profile image uploaded successfully!");
+          this.$emit('imageUploaded', this.downloadURL);
+          alert('Profile image uploaded successfully!');
         }
       );
-    },
-  },
+    }
+  }
 };
 </script>

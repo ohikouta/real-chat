@@ -59,6 +59,7 @@ import {
 } from 'firebase/firestore';
 import MessageInput from '../components/MessageInput.vue';
 import { db } from '../firebaseConfig';
+import { resolveDisplayName } from '../utils/userProfile';
 
 function generateChatId(userId1, userId2) {
   if (!userId1 || !userId2) {
@@ -197,7 +198,7 @@ export default {
         }
 
         const userData = userDoc.data();
-        this.chatPartnerName = userData.username || userData.email || '匿名ユーザー';
+        this.chatPartnerName = resolveDisplayName(userData);
       } catch (error) {
         console.error('チャット相手取得エラー:', error);
         this.chatPartnerName = 'Unknown User';
@@ -205,21 +206,27 @@ export default {
     },
 
     async resolveSenderName() {
-      if (this.currentUser.displayName) {
-        return this.currentUser.displayName;
-      }
-
       try {
         const userSnap = await getDoc(doc(db, 'users', this.currentUser.uid));
         if (!userSnap.exists()) {
-          return this.currentUser.email || '匿名ユーザー';
+          return resolveDisplayName({
+            displayName: this.currentUser.displayName,
+            email: this.currentUser.email
+          });
         }
 
         const userData = userSnap.data();
-        return userData.username || userData.email || this.currentUser.email || '匿名ユーザー';
+        return resolveDisplayName({
+          displayName: userData.displayName || this.currentUser.displayName,
+          username: userData.username,
+          email: userData.email || this.currentUser.email
+        });
       } catch (error) {
         console.error('送信者名取得エラー:', error);
-        return this.currentUser.email || '匿名ユーザー';
+        return resolveDisplayName({
+          displayName: this.currentUser.displayName,
+          email: this.currentUser.email
+        });
       }
     },
 
