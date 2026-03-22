@@ -5,6 +5,7 @@
 - 開発サーバー: `npm run serve`
 - 本番ビルド: `npm run build`
 - Lint: `npm run lint`
+- Firestore Rules 検証: `npm run test:rules`
 - Firebase CLI を使う場合は `npm install -g firebase-tools` → `firebase login` → `firebase init`（必要に応じて）→ `firebase emulators:start` / `firebase deploy` などのフローを利用。
 
 ## Obsidian ノート

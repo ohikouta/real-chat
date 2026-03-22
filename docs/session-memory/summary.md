@@ -1,7 +1,7 @@
 # Project Summary
 
-- Updated At: 2026-03-22T02:55:00Z
-- Branch: issue-56-clean-main
+- Updated At: 2026-03-22T11:11:00Z
+- Branch: issue-45-security-rules
 - HEAD: f02dfd05
 - Updated By: Codex
 
@@ -12,7 +12,7 @@
 - `#30` は完了し、PR `#34` は merge 済み
 - `#44` は完了し、PR `#59` は merge 済み
 - `#46` は完了し、PR `#60` は merge 済み
-- 現在の open Issue は `#45` `#48` `#56`
+- 現在の open Issue は `#45` `#48`
 - Firestore 設計の基準は [firestore.md](../db/firestore.md)
 
 ## Recent Progress
@@ -41,6 +41,7 @@
 - `src/router/index.js` の route name と guard 判定を整理し、`docs/routes.md` など関連ドキュメントを同期
 - `npm run lint` を実行し、lint error なしを確認
 - `#52` が merge され、`#47` の画面責務整理が `main` に取り込まれた
+<<<<<<< HEAD
 - `#53` が merge され、`#40` の相談投稿と新着一覧が `main` に取り込まれた
 - `#54` のレビュー対応で `ThreadDetailView` の route param 変更追従と無効投稿ガードを追加した
 - `#42` の参加者一覧表示を実装し、`authorId` 優先集約で表示方針を整理した
@@ -55,6 +56,13 @@
 - `AGENTS.md` の承認ポリシーへ `gh api` read/write の境界を追記した
 - PR 作成フローとして、通常 PR を原則とし、draft PR は明確な未完理由がある場合に限る方針を明文化した
 - PR 作成時は原則としてユーザー（`ohikouta`）を assignee に設定する方針を追加した
+- `#45` の着手として `firestore.rules` を新規追加し、`users` `threads` `threads/{threadId}/comments` `directMessages` の Rules を実装した
+- `firebase.json` に Firestore Rules と auth / firestore emulator 設定を追加した
+- `scripts/verify-firestore-rules.mjs` と `npm run test:rules` を追加し、Auth emulator の ID token 経由で Rules を検証するスクリプトを用意した
+- `npm run lint` は成功した
+- `/tmp/java-runtime/jdk-21.0.10+7-jre/Contents/Home` に展開した JRE 21 を使って Firestore emulator を起動できる状態にした
+- `scripts/verify-firestore-rules.mjs` が emulator の `*_HOST` 環境変数と現行ポート設定 `9199` / `8180` を読むよう修正した
+- `npm run test:rules` を実行し、`users` `threads` `comments` `directMessages` の許可 / 拒否ケースがすべて PASS することを確認した
 
 ## Current Decisions
 
@@ -92,11 +100,12 @@
 - GitHub の Issue / PR 状態を更新したターンでは、対応する Obsidian `タスク.md` も同ターンで同期する
 - PR は原則として通常 PR で作成し、draft PR は明確な未完理由がある場合に限る
 - PR 作成時は原則としてユーザー（`ohikouta`）を assignee に設定する
+- Firestore Rules は `users` を認証ユーザー限定、`threads` / `comments` を認証 + author 基準、`directMessages` を当事者限定 + sender 基準で扱う
+- Firestore Rules 検証は `/tmp/java-runtime/jdk-21.0.10+7-jre/Contents/Home` の一時 JRE を使って emulator 上で実行できる
 
 ## Next Actions
 
-- Issue `#56` の差分を `main` 起点の clean branch で PR に載せ直す
-- `#56` の整理後、`#45` または `#48` の着手順を決める
+- `#45` の差分を branch / PR にまとめる
 
 ## Reference Logs
 

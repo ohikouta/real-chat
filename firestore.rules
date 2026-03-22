@@ -1,0 +1,226 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function optionalString(data, field) {
+      return !data.keys().hasAny([field]) || data[field] is string;
+    }
+
+    function optionalTimestamp(data, field) {
+      return !data.keys().hasAny([field]) || data[field] is timestamp;
+    }
+
+    function optionalList(data, field) {
+      return !data.keys().hasAny([field]) || data[field] is list;
+    }
+
+    function optionalNumber(data, field) {
+      return !data.keys().hasAny([field]) || data[field] is number;
+    }
+
+    function userDocExists(userId) {
+      return exists(/databases/$(database)/documents/users/$(userId));
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn();
+
+      allow create: if isSelf(userId)
+        && request.resource.data.keys().hasOnly([
+          'displayName',
+          'username',
+          'email',
+          'profileImageUrl',
+          'isOnline',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.email is string
+        && optionalString(request.resource.data, 'displayName')
+        && optionalString(request.resource.data, 'username')
+        && optionalString(request.resource.data, 'profileImageUrl')
+        && (!request.resource.data.keys().hasAny(['isOnline']) || request.resource.data.isOnline is bool)
+        && optionalTimestamp(request.resource.data, 'createdAt')
+        && optionalTimestamp(request.resource.data, 'updatedAt');
+
+      allow update: if isSelf(userId)
+        && request.resource.data.keys().hasOnly([
+          'displayName',
+          'username',
+          'email',
+          'profileImageUrl',
+          'isOnline',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.email is string
+        && optionalString(request.resource.data, 'displayName')
+        && optionalString(request.resource.data, 'username')
+        && optionalString(request.resource.data, 'profileImageUrl')
+        && (!request.resource.data.keys().hasAny(['isOnline']) || request.resource.data.isOnline is bool)
+        && optionalTimestamp(request.resource.data, 'createdAt')
+        && optionalTimestamp(request.resource.data, 'updatedAt')
+        && (
+          !resource.data.keys().hasAny(['createdAt'])
+          || request.resource.data.createdAt == resource.data.createdAt
+        );
+
+      allow delete: if false;
+    }
+
+    match /threads/{threadId} {
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'title',
+          'body',
+          'tags',
+          'authorId',
+          'authorName',
+          'commentCount',
+          'lastCommentAt',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'title',
+          'body',
+          'authorId',
+          'authorName',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.body is string
+        && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.authorName is string
+        && optionalList(request.resource.data, 'tags')
+        && optionalNumber(request.resource.data, 'commentCount')
+        && optionalTimestamp(request.resource.data, 'lastCommentAt')
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+
+      allow update: if signedIn()
+        && resource.data.authorId == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'title',
+          'body',
+          'tags',
+          'authorId',
+          'authorName',
+          'commentCount',
+          'lastCommentAt',
+          'createdAt',
+          'updatedAt'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.body is string
+        && request.resource.data.authorId == resource.data.authorId
+        && request.resource.data.authorName == resource.data.authorName
+        && optionalList(request.resource.data, 'tags')
+        && optionalNumber(request.resource.data, 'commentCount')
+        && optionalTimestamp(request.resource.data, 'lastCommentAt')
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt is timestamp;
+
+      allow delete: if signedIn() && resource.data.authorId == request.auth.uid;
+
+      match /comments/{commentId} {
+        allow read: if signedIn();
+
+        allow create: if signedIn()
+          && request.resource.data.keys().hasOnly([
+            'body',
+            'authorId',
+            'authorName',
+            'createdAt',
+            'updatedAt',
+            'parentCommentId'
+          ])
+          && request.resource.data.keys().hasAll([
+            'body',
+            'authorId',
+            'authorName',
+            'createdAt',
+            'updatedAt'
+          ])
+          && request.resource.data.body is string
+          && request.resource.data.authorId == request.auth.uid
+          && request.resource.data.authorName is string
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.updatedAt is timestamp
+          && optionalString(request.resource.data, 'parentCommentId');
+
+        allow update: if signedIn()
+          && resource.data.authorId == request.auth.uid
+          && request.resource.data.keys().hasOnly([
+            'body',
+            'authorId',
+            'authorName',
+            'createdAt',
+            'updatedAt',
+            'parentCommentId'
+          ])
+          && request.resource.data.body is string
+          && request.resource.data.authorId == resource.data.authorId
+          && request.resource.data.authorName == resource.data.authorName
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.updatedAt is timestamp
+          && (
+            !resource.data.keys().hasAny(['parentCommentId'])
+            || request.resource.data.parentCommentId == resource.data.parentCommentId
+          )
+          && optionalString(request.resource.data, 'parentCommentId');
+
+        allow delete: if signedIn() && resource.data.authorId == request.auth.uid;
+      }
+    }
+
+    match /directMessages/{messageId} {
+      allow read: if signedIn()
+        && (
+          resource.data.senderId == request.auth.uid
+          || resource.data.receiverId == request.auth.uid
+        );
+
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'chatId',
+          'senderId',
+          'senderName',
+          'receiverId',
+          'text',
+          'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'chatId',
+          'senderId',
+          'senderName',
+          'receiverId',
+          'text',
+          'createdAt'
+        ])
+        && request.resource.data.chatId is string
+        && request.resource.data.chatId.size() > 0
+        && request.resource.data.senderId == request.auth.uid
+        && request.resource.data.senderId is string
+        && request.resource.data.receiverId is string
+        && request.resource.data.senderId != request.resource.data.receiverId
+        && request.resource.data.senderName is string
+        && request.resource.data.text is string
+        && request.resource.data.createdAt is timestamp
+        && userDocExists(request.resource.data.receiverId);
+
+      allow update, delete: if false;
+    }
+  }
+}
