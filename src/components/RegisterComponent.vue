@@ -30,6 +30,7 @@
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
+import { getAuthErrorMessage, getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
 
 export default {
   data() {
@@ -72,8 +73,10 @@ export default {
 
         this.$router.push('/profile');
       } catch (error) {
-        console.error('Registration error:', error);
-        this.errorMessage = '登録に失敗しました。入力内容を確認して再度お試しください。';
+        logFirebaseError('ユーザー登録', error);
+        this.errorMessage = error?.code?.startsWith('auth/')
+          ? getAuthErrorMessage(error, '登録に失敗しました。入力内容を確認して再度お試しください。')
+          : getFirestoreErrorMessage(error, 'プロフィール初期化に失敗しました。時間を置いて再度お試しください。');
       } finally {
         this.isSubmitting = false;
       }

@@ -99,6 +99,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { useRoute } from 'vue-router';
 import { auth, db } from '../firebaseConfig';
+import { getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
 import { resolveDisplayName } from '../utils/userProfile';
 
 export default {
@@ -229,8 +230,8 @@ export default {
           threadError.value = '';
         },
         (error) => {
-          console.error('Failed to load thread detail:', error);
-          threadError.value = 'スレッド詳細の読み込みに失敗しました。';
+          logFirebaseError('スレッド詳細読み込み', error);
+          threadError.value = getFirestoreErrorMessage(error, 'スレッド詳細の読み込みに失敗しました。');
         }
       );
     };
@@ -259,8 +260,8 @@ export default {
           commentsError.value = '';
         },
         (error) => {
-          console.error('Failed to load comments:', error);
-          commentsError.value = 'コメント一覧の読み込みに失敗しました。';
+          logFirebaseError('コメント一覧読み込み', error);
+          commentsError.value = getFirestoreErrorMessage(error, 'コメント一覧の読み込みに失敗しました。');
           commentsLoading.value = false;
         }
       );
@@ -290,7 +291,7 @@ export default {
           email: userData.email || user.email
         });
       } catch (error) {
-        console.error('Failed to resolve comment author profile:', error);
+        logFirebaseError('コメント投稿者名解決', error);
         return resolveDisplayName({
           displayName: user.displayName,
           email: user.email
@@ -332,8 +333,8 @@ export default {
 
         commentBody.value = '';
       } catch (error) {
-        console.error('Failed to create comment:', error);
-        commentError.value = 'コメント投稿に失敗しました。時間を置いて再度お試しください。';
+        logFirebaseError('コメント投稿', error);
+        commentError.value = getFirestoreErrorMessage(error, 'コメント投稿に失敗しました。時間を置いて再度お試しください。');
       } finally {
         isSubmittingComment.value = false;
       }

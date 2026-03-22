@@ -63,6 +63,13 @@
 - `UserList` は自分自身を一覧から除外し、`users` 購読ベースで表示名 / アイコン / オンライン状態を出す構成へ整理
 - PR `#59` の Copilot 指摘を受け、`ProfileDetails` のフォーム上書き防止、`UserList` の N+1 読み取り削減、`PrivateChatView` の送信者名キャッシュ、DM 相手名のフォールバック統一を実施
 - Copilot レビュー対応は `1 conversation = 1 commit` を標準とし、PR 本文更新は `--body-file` を優先する運用を `AGENTS.md` に追記
+- PR `#59` が merge され、Issue `#44` が closed になったことを確認
+- Obsidian `タスク.md` の `vue-chat` レーンで `#44` 完了と `real-chat` リンクへの同期を実施
+- `#46` の着手として `firebaseError` util を追加し、認証関連・DM・スレッド系・プロフィール系のユーザー向けエラー表示と開発者向けログ出力を整理
+- `LoginComponent` に送信中 UI と画面内エラー表示を追加し、ログイン後の `users.isOnline` 更新失敗もユーザー向けメッセージを返すよう変更
+- `MessageInput` に disabled / buttonLabel を追加し、`PrivateChatView` の DM 送信中 UI と送信失敗メッセージを統一
+- `TimelineView` `ThreadDetailView` `UserList` `ProfileDetails` `ImageUploader` の Firestore 失敗時メッセージを共通変換へ寄せた
+- 手動確認依頼では `確認URL` `確認手順` `見てほしい観点` を毎回提示する運用を `AGENTS.md` に追記
 - `npm run lint` を実行し、lint error なしを確認
 - `npm run build` を実行し、bundle size warning のみで build 成功を確認
 
@@ -95,11 +102,12 @@
 - プロフィール最小構成の正本は `users/{uid}` の `displayName` / `profileImageUrl` とし、互換のため `username` 読み取りは残す
 - 表示名のフォールバック順は `displayName -> username -> email -> 匿名ユーザー` を標準とする
 - プロフィール編集導線は `/profile` に寄せ、登録直後も `/profile` へ送る
+- Firebase エラー処理は「ユーザー向けメッセージ」と「開発者向けログ」を分離し、`logFirebaseError` とエラー変換 util で寄せる
 
 ## Next Actions
 
-- Issue `#44` の差分を branch / PR にまとめる
-- `#44` の手動確認後、`#46` のエラーハンドリング統一へ進む
+- Issue `#46` の差分を branch / PR にまとめる
+- `#46` の手動確認後、`#45` の Security Rules 実装へ進む
 
 ## Reference Logs
 

@@ -4,14 +4,25 @@
       v-model="message"
       @keyup.enter="handleSend"
       placeholder="メッセージを入力..."
+      :disabled="disabled"
     />
-    <button @click="handleSend">送信</button>
+    <button @click="handleSend" :disabled="disabled">{{ buttonLabel }}</button>
   </div>
 </template>
 
 <script>
 export default {
   name: 'MessageInput',
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    buttonLabel: {
+      type: String,
+      default: '送信'
+    }
+  },
   data() {
     return {
       message: ''
@@ -19,6 +30,10 @@ export default {
   },
   methods: {
     handleSend() {
+      if (this.disabled) {
+        return;
+      }
+
       if (this.message.trim()) {
         this.$emit('sendMessage', this.message);
         this.message = '';
@@ -54,6 +69,12 @@ button {
   border: none;
   font-weight: 700;
   cursor: pointer;
+}
+
+input:disabled,
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 button:hover {
   filter: brightness(1.05);

@@ -96,6 +96,7 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
+import { getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
 import { resolveDisplayName } from '../utils/userProfile';
 
 function normalizeTags(rawTags) {
@@ -152,8 +153,8 @@ export default {
           loadError.value = '';
         },
         (error) => {
-          console.error('Failed to load threads:', error);
-          loadError.value = '相談一覧の読み込みに失敗しました。時間を置いて再度お試しください。';
+          logFirebaseError('相談一覧読み込み', error);
+          loadError.value = getFirestoreErrorMessage(error, '相談一覧の読み込みに失敗しました。時間を置いて再度お試しください。');
           isLoading.value = false;
         }
       );
@@ -176,7 +177,7 @@ export default {
           email: userData.email || user.email
         });
       } catch (error) {
-        console.error('Failed to resolve author profile:', error);
+        logFirebaseError('相談投稿者名解決', error);
         return resolveDisplayName({
           displayName: user.displayName,
           email: user.email
@@ -215,8 +216,8 @@ export default {
 
         resetForm();
       } catch (error) {
-        console.error('Failed to create thread:', error);
-        submitError.value = '相談投稿に失敗しました。入力内容を確認して再度お試しください。';
+        logFirebaseError('相談投稿', error);
+        submitError.value = getFirestoreErrorMessage(error, '相談投稿に失敗しました。入力内容を確認して再度お試しください。');
       } finally {
         isSubmitting.value = false;
       }

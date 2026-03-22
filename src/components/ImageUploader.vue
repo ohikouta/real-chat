@@ -13,6 +13,7 @@ import { getAuth } from 'firebase/auth';
 import { doc, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '@/firebaseConfig';
+import { getFirestoreErrorMessage, getStorageErrorMessage, logFirebaseError } from '../utils/firebaseError';
 
 export default {
   emits: ['imageUploaded'],
@@ -43,8 +44,8 @@ export default {
           this.uploadProgress = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100).toFixed(0);
         },
         (error) => {
-          console.error('Upload failed:', error);
-          alert('Upload failed. Please try again.');
+          logFirebaseError('プロフィール画像アップロード', error);
+          alert(getStorageErrorMessage(error, '画像アップロードに失敗しました。時間を置いて再度お試しください。'));
         },
         async () => {
           this.downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
@@ -52,13 +53,18 @@ export default {
 
           const db = getFirestore();
           const userDocRef = doc(db, 'users', user.uid);
-          await setDoc(userDocRef, {
-            profileImageUrl: this.downloadURL,
-            updatedAt: serverTimestamp()
-          }, { merge: true });
+          try {
+            await setDoc(userDocRef, {
+              profileImageUrl: this.downloadURL,
+              updatedAt: serverTimestamp()
+            }, { merge: true });
 
-          this.$emit('imageUploaded', this.downloadURL);
-          alert('Profile image uploaded successfully!');
+            this.$emit('imageUploaded', this.downloadURL);
+            alert('Profile image uploaded successfully!');
+          } catch (error) {
+            logFirebaseError('プロフィール画像URL保存', error);
+            alert(getFirestoreErrorMessage(error, '画像URLの保存に失敗しました。時間を置いて再度お試しください。'));
+          }
         }
       );
     }
