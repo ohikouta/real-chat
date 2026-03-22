@@ -190,3 +190,14 @@
 - `PrivateChatView` で送信者名の解決結果をキャッシュし、毎送信ごとの Firestore 読み取りを避けるよう変更
 - `PrivateChatView` のチャット相手名 fallback を `匿名ユーザー` に統一
 - 運用ルールとして `1 conversation = 1 commit`、PR 本文は `--body-file` 優先、意味単位での commit 分割を `AGENTS.md` に追記
+
+## 2026-03-22T10:30:00Z
+
+- PR `#59` が merge され、Issue `#44` が closed になったことを確認
+- Obsidian `タスク.md` の `vue-chat` レーンで `#44` 完了、`#47` 完了、`#45` `#46` `#48` の `real-chat` リンク同期を実施
+- Issue `#46` の着手として `/tmp/vue-chat-46` worktree を作成
+- `src/utils/firebaseError.js` を追加し、認証エラーと Firestore エラーのユーザー向けメッセージ変換、および開発者向けログ出力関数を定義
+- `LoginComponent` に送信中 UI / 画面内エラー表示 / `users.isOnline` 更新失敗時のメッセージを追加
+- `MessageInput` に disabled / buttonLabel を追加し、`PrivateChatView` で送信中 UI とエラー表示を統一
+- `TimelineView` `ThreadDetailView` `UserList` `ProfileDetails` `ImageUploader` の Firestore 失敗時メッセージとログ出力を共通 util へ寄せた
+- `npm run lint` と `npm run build` を再実行し、warning のみで通過を確認

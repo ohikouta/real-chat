@@ -37,7 +37,11 @@
 
       <p v-if="sendError" class="message message--error">{{ sendError }}</p>
       <div class="composer-shell">
-        <MessageInput @send-message="sendMessage" />
+        <MessageInput
+          @send-message="sendMessage"
+          :disabled="isSendingMessage || !currentUser"
+          :button-label="isSendingMessage ? '送信中...' : '送信'"
+        />
       </div>
     </div>
   </section>
@@ -59,6 +63,7 @@ import {
 } from 'firebase/firestore';
 import MessageInput from '../components/MessageInput.vue';
 import { db } from '../firebaseConfig';
+import { getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
 import { resolveDisplayName } from '../utils/userProfile';
 
 function generateChatId(userId1, userId2) {
@@ -88,6 +93,7 @@ export default {
       chatPartnerName: '相手ユーザー',
       cachedSenderName: '',
       isLoading: true,
+      isSendingMessage: false,
       loadError: '',
       sendError: '',
       unsubscribeMessages: null
@@ -116,6 +122,7 @@ export default {
       this.messages = [];
       this.chatPartnerName = '相手ユーザー';
       this.isLoading = true;
+      this.isSendingMessage = false;
       this.loadError = '';
       this.sendError = '';
     },
@@ -178,8 +185,8 @@ export default {
           this.scrollToBottom();
         },
         (error) => {
-          console.error('DM読み込みエラー:', error);
-          this.loadError = 'DMの読み込みに失敗しました。時間を置いて再度お試しください。';
+          logFirebaseError('DM読み込み', error);
+          this.loadError = getFirestoreErrorMessage(error, 'DMの読み込みに失敗しました。時間を置いて再度お試しください。');
           this.isLoading = false;
         }
       );
@@ -201,7 +208,7 @@ export default {
         const userData = userDoc.data();
         this.chatPartnerName = resolveDisplayName(userData);
       } catch (error) {
-        console.error('チャット相手取得エラー:', error);
+        logFirebaseError('チャット相手取得', error);
         this.chatPartnerName = '匿名ユーザー';
       }
     },
@@ -234,7 +241,7 @@ export default {
         });
         return this.cachedSenderName;
       } catch (error) {
-        console.error('送信者名取得エラー:', error);
+        logFirebaseError('送信者名取得', error);
         this.cachedSenderName = resolveDisplayName({
           displayName: this.currentUser.displayName,
           email: this.currentUser.email
@@ -257,6 +264,8 @@ export default {
         return;
       }
 
+      this.isSendingMessage = true;
+
       try {
         const senderName = await this.resolveSenderName();
 
@@ -271,8 +280,10 @@ export default {
 
         this.scrollToBottom();
       } catch (error) {
-        console.error('メッセージ送信エラー:', error);
-        this.sendError = 'メッセージ送信に失敗しました。時間を置いて再度お試しください。';
+        logFirebaseError('メッセージ送信', error);
+        this.sendError = getFirestoreErrorMessage(error, 'メッセージ送信に失敗しました。時間を置いて再度お試しください。');
+      } finally {
+        this.isSendingMessage = false;
       }
     },
 

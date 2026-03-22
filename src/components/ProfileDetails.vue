@@ -67,6 +67,7 @@ import { doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
 import ImageUploader from './ImageUploader.vue';
 import defaultProfileImage from '../assets/default-profile.png';
 import { auth, db } from '../firebaseConfig';
+import { getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
 import { resolveDisplayName, resolveProfileImageUrl } from '../utils/userProfile';
 
 export default {
@@ -139,8 +140,8 @@ export default {
           }
         },
         (error) => {
-          console.error('プロフィール取得エラー:', error);
-          this.errorMessage = 'プロフィール情報の読み込みに失敗しました。';
+          logFirebaseError('プロフィール取得', error);
+          this.errorMessage = getFirestoreErrorMessage(error, 'プロフィール情報の読み込みに失敗しました。');
         }
       );
     });
@@ -202,8 +203,8 @@ export default {
         this.isDirty = false;
         this.message = 'プロフィールを更新しました。';
       } catch (error) {
-        console.error('プロフィール更新エラー:', error);
-        this.errorMessage = 'プロフィール更新に失敗しました。時間を置いて再度お試しください。';
+        logFirebaseError('プロフィール更新', error);
+        this.errorMessage = getFirestoreErrorMessage(error, 'プロフィール更新に失敗しました。時間を置いて再度お試しください。');
       } finally {
         this.isSaving = false;
       }

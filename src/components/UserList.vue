@@ -33,6 +33,7 @@
 import { collection, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '@/firebaseConfig';
 import defaultProfileImage from '@/assets/default-profile.png';
+import { getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
 import { resolveDisplayName, resolveProfileImageUrl } from '../utils/userProfile';
 
 export default {
@@ -76,14 +77,14 @@ export default {
           this.isLoading = false;
           this.loadError = '';
         } catch (error) {
-          console.error('ユーザー一覧取得エラー:', error);
-          this.loadError = 'ユーザー一覧の読み込みに失敗しました。';
+          logFirebaseError('ユーザー一覧整形', error);
+          this.loadError = getFirestoreErrorMessage(error, 'ユーザー一覧の読み込みに失敗しました。');
           this.isLoading = false;
         }
       },
       (error) => {
-        console.error('ユーザー購読エラー:', error);
-        this.loadError = 'ユーザー一覧の購読に失敗しました。';
+        logFirebaseError('ユーザー一覧購読', error);
+        this.loadError = getFirestoreErrorMessage(error, 'ユーザー一覧の購読に失敗しました。');
         this.isLoading = false;
       }
     );
