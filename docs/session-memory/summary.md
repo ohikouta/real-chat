@@ -1,8 +1,8 @@
 # Project Summary
 
-- Updated At: 2026-03-22T01:00:00Z
-- Branch: issue-43-dm-stabilization
-- HEAD: 10cfda2b
+- Updated At: 2026-03-22T02:55:00Z
+- Branch: issue-56-clean-main
+- HEAD: f02dfd05
 - Updated By: Codex
 
 ## Current Status
@@ -10,7 +10,9 @@
 - `#25` は完了し、PR `#32` は merge 済み
 - `#27` は完了し、PR `#37` は merge 済み
 - `#30` は完了し、PR `#34` は merge 済み
-- 現在の open Issue は `#43` - `#48`
+- `#44` は完了し、PR `#59` は merge 済み
+- `#46` は完了し、PR `#60` は merge 済み
+- 現在の open Issue は `#45` `#48` `#56`
 - Firestore 設計の基準は [firestore.md](../db/firestore.md)
 
 ## Recent Progress
@@ -39,39 +41,20 @@
 - `src/router/index.js` の route name と guard 判定を整理し、`docs/routes.md` など関連ドキュメントを同期
 - `npm run lint` を実行し、lint error なしを確認
 - `#52` が merge され、`#47` の画面責務整理が `main` に取り込まれた
-- `#40` の着手として `/timeline` を追加し、`threads` 投稿フォームと新着一覧を `TimelineView` に実装
-- `threads` 投稿時に `title` `body` `tags` `authorId` `authorName` `createdAt` `updatedAt` を保存するよう実装
-- `Header` に `Timeline` 導線を追加し、`docs/routes.md` を現行ルーティングへ同期
-- `LandingHero` の参照画像 `src/assets/sample_chat.png` を追加し、`npm run build` が通る状態へ復旧
-- `npm run build` を実行し、bundle size warning のみで build 成功を確認
-- PR `#53` が merge され、`#40` の相談投稿と新着一覧が `main` に取り込まれた
-- `#41` の着手として `/timeline/:postId/thread` を追加し、`ThreadDetailView` でスレッド詳細とコメント機能を実装
-- `threads/{threadId}/comments` を `createdAt asc` で購読し、コメント投稿を `body` `authorId` `authorName` `createdAt` `updatedAt` で保存するよう実装
-- `TimelineView` から `ThreadDetail` への導線を追加し、`docs/routes.md` を詳細画面込みの状態へ同期
-- PR `#54` の Copilot レビューを受け、`ThreadDetailView` を route param 変更に追従する購読へ修正し、スレッド未存在時のコメント投稿を禁止
-- `TimelineView` の `詳細を見る` に `aria-label` を追加し、`docs/routes.md` の将来タスクを現PRのチェックリストから分離
-- `#42` の着手として `ThreadDetailView` に参加者一覧を追加し、スレッド投稿者とコメント投稿者を `authorId` 基準で重複排除して集約表示するよう実装
-- ユーザー情報が欠ける場合は既存の `authorName` を優先し、欠ける場合は `匿名ユーザー` を表示する方針で統一
-- `#43` の着手として `PrivateChatView` を `directMessages` + `chatId` + `createdAt` 前提の購読 / 書き込みへ切り替え
-- `MessageInput` の未定義 `count` / `increment` を削除し、DM 入力用の最小コンポーネントへ整理
-- `UserList` の `users/{userId}/messages/latest` 表示は壊れない最小フォールバックへ調整
-- `directMessages` の `chatId + createdAt` 用 Firestore 複合インデックス定義として `firebase.json` と `firestore.indexes.json` を追加
-- `#44` の着手として `users.displayName` / `profileImageUrl` を最小プロフィール項目として扱う方針に整理
-- `RegisterComponent` で `displayName` を auth と `users/{uid}` の両方へ保存し、登録後は `/profile` へ遷移するよう変更
-- `ProfileDetails` をプロフィール表示と編集の集約画面へ作り替え、表示名更新とアイコン URL 編集、画像アップロード導線を追加
-- `Header` `UserList` `TimelineView` `ThreadDetailView` `PrivateChatView` の表示名解決を `displayName -> username -> email -> 匿名ユーザー` で統一
-- `UserList` は自分自身を一覧から除外し、`users` 購読ベースで表示名 / アイコン / オンライン状態を出す構成へ整理
-- PR `#59` の Copilot 指摘を受け、`ProfileDetails` のフォーム上書き防止、`UserList` の N+1 読み取り削減、`PrivateChatView` の送信者名キャッシュ、DM 相手名のフォールバック統一を実施
-- Copilot レビュー対応は `1 conversation = 1 commit` を標準とし、PR 本文更新は `--body-file` を優先する運用を `AGENTS.md` に追記
-- PR `#59` が merge され、Issue `#44` が closed になったことを確認
-- Obsidian `タスク.md` の `vue-chat` レーンで `#44` 完了と `real-chat` リンクへの同期を実施
-- `#46` の着手として `firebaseError` util を追加し、認証関連・DM・スレッド系・プロフィール系のユーザー向けエラー表示と開発者向けログ出力を整理
-- `LoginComponent` に送信中 UI と画面内エラー表示を追加し、ログイン後の `users.isOnline` 更新失敗もユーザー向けメッセージを返すよう変更
-- `MessageInput` に disabled / buttonLabel を追加し、`PrivateChatView` の DM 送信中 UI と送信失敗メッセージを統一
-- `TimelineView` `ThreadDetailView` `UserList` `ProfileDetails` `ImageUploader` の Firestore 失敗時メッセージを共通変換へ寄せた
-- 手動確認依頼では `確認URL` `確認手順` `見てほしい観点` を毎回提示する運用を `AGENTS.md` に追記
-- `npm run lint` を実行し、lint error なしを確認
-- `npm run build` を実行し、bundle size warning のみで build 成功を確認
+- `#53` が merge され、`#40` の相談投稿と新着一覧が `main` に取り込まれた
+- `#54` のレビュー対応で `ThreadDetailView` の route param 変更追従と無効投稿ガードを追加した
+- `#42` の参加者一覧表示を実装し、`authorId` 優先集約で表示方針を整理した
+- `#43` の着手として `PrivateChatView` を `directMessages` + `chatId` + `createdAt` 前提へ切り替えた
+- `#44` の着手としてプロフィール最小構成を `displayName` / `profileImageUrl` 中心へ整理した
+- `#59` の Copilot 指摘対応で、`ProfileDetails` の dirty 制御、`UserList` の N+1 解消、DM 送信者名キャッシュ、表示名フォールバック統一を実施した
+- `#44` が merge 済みとなり、Obsidian の `vue-chat` レーンを同期した
+- `#46` の着手として `firebaseError` util を追加し、認証・DM・スレッド・プロフィール系のエラー表示とログ出力を統一した
+- `#60` が merge 済みとなり、`#46` のエラーハンドリング統一が `main` に取り込まれた
+- `#56` の確認として、`git fetch origin` を prompt 側から外し、safe default と矛盾しないよう整理した
+- `#56` の確認として、`gh api` は read-only GET を safe default、`POST|PATCH|PUT|DELETE` を要確認に切り分けた
+- `AGENTS.md` の承認ポリシーへ `gh api` read/write の境界を追記した
+- PR 作成フローとして、通常 PR を原則とし、draft PR は明確な未完理由がある場合に限る方針を明文化した
+- PR 作成時は原則としてユーザー（`ohikouta`）を assignee に設定する方針を追加した
 
 ## Current Decisions
 
@@ -103,11 +86,17 @@
 - 表示名のフォールバック順は `displayName -> username -> email -> 匿名ユーザー` を標準とする
 - プロフィール編集導線は `/profile` に寄せ、登録直後も `/profile` へ送る
 - Firebase エラー処理は「ユーザー向けメッセージ」と「開発者向けログ」を分離し、`logFirebaseError` とエラー変換 util で寄せる
+- 標準的な実装運用は `Issue確認 -> worktree/branch作成 -> 実装 -> lint/build -> PR作成 -> Copilotレビュー反映 -> 動作確認 -> merge` を基本線とする
+- 承認が必要になりやすいコマンド群と、安全側に寄せるコマンド群は `AGENTS.md` と `.codex/rules/*.rules` で管理する
+- `gh api` は `.codex/rules/10-safe-default.rules` で allow された特定の read-only GET のみ安全側、`--method POST|PATCH|PUT|DELETE` とそれ以外の `gh api` は要確認として扱う
+- GitHub の Issue / PR 状態を更新したターンでは、対応する Obsidian `タスク.md` も同ターンで同期する
+- PR は原則として通常 PR で作成し、draft PR は明確な未完理由がある場合に限る
+- PR 作成時は原則としてユーザー（`ohikouta`）を assignee に設定する
 
 ## Next Actions
 
-- Issue `#46` の差分を branch / PR にまとめる
-- `#46` の手動確認後、`#45` の Security Rules 実装へ進む
+- Issue `#56` の差分を `main` 起点の clean branch で PR に載せ直す
+- `#56` の整理後、`#45` または `#48` の着手順を決める
 
 ## Reference Logs
 

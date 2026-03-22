@@ -17,6 +17,16 @@
 - build を妨げていた `src/assets/sample_chat.png` 欠落を解消
 - `npm run lint` は成功、`npm run build` は bundle size warning のみで成功
 
+## 2026-03-20T00:10:00Z
+
+- リポジトリ文書への固有名 `トビ` の追記は Obsidian 側の役割ベース運用と層がずれるため取り下げ
+- `AGENTS.md` / `docs/multi-agent-orchestration.md` / `docs/session-memory/summary.md` から固有名の記述を削除
+
+## 2026-03-20T01:05:00Z
+
+- このリポジトリの Codex 名はリポジトリ直下の `.codex-name` で管理する運用に合わせていたが、現行 `main` には `.codex-name` が存在しない状態を確認した
+- 固有名は文書本文ではなく設定ファイル側で管理する方針は維持しつつ、ログ上の値と実ファイル状態は一致させる
+
 ## 2026-03-08T04:03:59Z
 
 - セッション継続用の記録機構を導入
@@ -202,3 +212,33 @@
 - `TimelineView` `ThreadDetailView` `UserList` `ProfileDetails` `ImageUploader` の Firestore 失敗時メッセージとログ出力を共通 util へ寄せた
 - `npm run lint` と `npm run build` を再実行し、warning のみで通過を確認
 - 手動確認依頼時は `確認URL` `確認手順` `見てほしい観点` を毎回明示する運用を `AGENTS.md` に追記
+
+## 2026-03-22T00:00:00Z
+
+- 標準的な開発フローを `Issue確認 -> worktree/branch作成 -> 実装 -> lint/build -> PR作成 -> Copilotレビュー反映 -> 動作確認 -> merge` として `AGENTS.md` に明文化
+- 承認が発生しやすいコマンド群を `AGENTS.md` の承認ポリシーへ整理
+- `.codex/rules/10-safe-default.rules` に `npm run serve` と `git fetch origin` を追加し、標準フロー内の不要な確認を減らす方針へ更新
+
+## 2026-03-22T00:40:00Z
+
+- `#40` `#41` `#42` が GitHub では完了していた一方、Obsidian `タスク.md` が未同期だったことを確認
+- 再発防止として、Issue close / PR merge / 実装完了確認のターンで Obsidian `タスク.md` も同ターン同期するルールを `AGENTS.md` に追記
+
+## 2026-03-22T02:10:00Z
+
+- open Issue を再確認し、継続作業の対象を `#56 Codex 承認ルールと標準開発フローを整理する` に絞った
+- `.codex/rules/20-approval-required.rules` から `git fetch` の prompt 重複を外し、`10-safe-default.rules` の `git fetch origin` 許可と矛盾しないよう整理した
+- `.codex/rules/*.rules` で `gh api` を read-only GET は安全側、`--method POST|PATCH|PUT|DELETE` は要確認に切り分けた
+- `AGENTS.md` の承認ポリシーへ `gh api` の read/write 境界を追記し、末尾の重複行を解消した
+- `summary.md` の open Issue / next actions を現状に合わせて更新した
+
+## 2026-03-22T02:35:00Z
+
+- PR 作成フローについて、draft PR を標準にしない方針を確認した
+- `AGENTS.md` に「PR は原則として通常 PR、draft は明確な未完理由がある場合のみ」と追記した
+- `summary.md` にも同方針を同期し、次回以降の判断ブレを防ぐ状態にした
+
+## 2026-03-22T02:55:00Z
+
+- PR 作成時の追加運用として、原則ユーザー（`ohikouta`）を assignee に設定する方針を確認した
+- `AGENTS.md` と `summary.md` に同方針を追記し、以後の PR 作成手順へ反映する前提を明文化した

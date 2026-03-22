@@ -35,6 +35,7 @@
 - PR を作成したら、原則として Copilot レビューを確認し、conversation ごとに修正内容を返信したうえでマージ判定へ進めること。
 - Copilot レビューを受けたときは、原則として `1 conversation = 1 commit` で対応し、どの指摘への修正かを commit message から追える状態を保つこと。
 - Copilot レビュー対応の標準手順は、`review thread の取得 -> 指摘内容と対応方針の共有 -> conversation ごとの修正 -> conversation ごとの commit -> lint/build -> 各 conversation へ返信 -> 最終確認` とする。
+- PR は原則として通常 PR で作成し、draft PR は「レビュー前にまだ動作確認や差分整理が終わっていない」など明確な理由がある場合に限ること。
 - PR を作成する際は、原則として assignee をユーザー本人（`ohikouta`）に設定すること。
 - 動作確認は、可能なら branch / worktree ごとに開発サーバーを別ポートで立て、main 未反映でも確認できる状態を優先すること。
 - 手動確認を依頼する際は、「確認URL」「確認手順」「見てほしい観点」を毎回セットで提示すること。単に「確認してください」で終わらせないこと。
@@ -62,6 +63,7 @@
 ## 承認ポリシー
 - Codex がユーザー確認を求めやすいのは、主に `git` の更新系（`fetch` `worktree add` `add` `commit` `push` など）、`gh` の更新系（`pr create` `pr comment` `pr review` `issue comment` など）、`gh api`、`npm install` 系、`firebase`、`docker`、`rm -rf`、および workspace 外への書き込みである。
 - 読み取り系の `gh issue/pr view|list`、`git status|diff|log|show`、`git worktree list`、`npm run lint|build` は原則として安全側に寄せる。
+- `gh api` は `.codex/rules/10-safe-default.rules` で allow された特定の read-only GET のみ安全側に寄せてよい。それ以外の `gh api` 呼び出しと、write 系の `--method POST|PATCH|PUT|DELETE` は都度確認対象として扱う。
 - `npm run serve` は標準のローカル確認フローとして扱う。branch / worktree ごとの別ポート起動を許容する。
 - Obsidian vault など workspace 外への書き込みは、内容が正しくても別途確認対象として扱う。
 - `git reset --hard`、`git checkout --`、`git clean -fd|-xdf`、`firebase deploy`、package publish は禁止対象として維持する。

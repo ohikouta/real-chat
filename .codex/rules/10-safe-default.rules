@@ -67,6 +67,30 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern = ["npm", "run", "serve"],
+    decision = "allow",
+    justification = "Starting the local dev server is part of the normal implementation and review loop.",
+    match = [
+        "npm run serve",
+        "npm run serve -- --port 8082",
+        "npm run serve -- --port 8083",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "fetch", "origin"],
+    decision = "allow",
+    justification = "Fetching latest remote refs is part of the routine issue workflow and does not modify the checked-out files directly.",
+    match = [
+        "git fetch origin",
+        "git fetch origin main",
+    ],
+    not_match = [
+        "git fetch --all --prune",
+    ],
+)
+
+prefix_rule(
     pattern = ["gh", ["issue", "pr"], ["view", "list", "status"]],
     decision = "allow",
     justification = "Read-only GitHub inspection is part of the standard workflow.",
@@ -79,5 +103,23 @@ prefix_rule(
     not_match = [
         "gh pr create",
         "gh pr merge 33",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "api", "repos/ohikouta/vue-chat/issues"],
+    decision = "allow",
+    justification = "Read-only GitHub API issue listing is safe for inspection.",
+    match = [
+        "gh api repos/ohikouta/vue-chat/issues",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "api", "repos/ohikouta/vue-chat/pulls"],
+    decision = "allow",
+    justification = "Read-only GitHub API pull request listing is safe for inspection.",
+    match = [
+        "gh api repos/ohikouta/vue-chat/pulls",
     ],
 )
