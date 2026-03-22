@@ -194,7 +194,7 @@ export default {
         const userDoc = await getDoc(doc(db, 'users', this.chatPartnerId));
 
         if (!userDoc.exists()) {
-          this.chatPartnerName = 'Unknown User';
+          this.chatPartnerName = '匿名ユーザー';
           return;
         }
 
@@ -202,7 +202,7 @@ export default {
         this.chatPartnerName = resolveDisplayName(userData);
       } catch (error) {
         console.error('チャット相手取得エラー:', error);
-        this.chatPartnerName = 'Unknown User';
+        this.chatPartnerName = '匿名ユーザー';
       }
     },
 
