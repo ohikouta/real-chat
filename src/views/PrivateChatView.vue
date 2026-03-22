@@ -86,6 +86,7 @@ export default {
       currentUser: null,
       chatPartnerId: '',
       chatPartnerName: '相手ユーザー',
+      cachedSenderName: '',
       isLoading: true,
       loadError: '',
       sendError: '',
@@ -206,27 +207,39 @@ export default {
     },
 
     async resolveSenderName() {
+      if (this.cachedSenderName) {
+        return this.cachedSenderName;
+      }
+
+      if (this.currentUser.displayName) {
+        this.cachedSenderName = this.currentUser.displayName;
+        return this.cachedSenderName;
+      }
+
       try {
         const userSnap = await getDoc(doc(db, 'users', this.currentUser.uid));
         if (!userSnap.exists()) {
-          return resolveDisplayName({
+          this.cachedSenderName = resolveDisplayName({
             displayName: this.currentUser.displayName,
             email: this.currentUser.email
           });
+          return this.cachedSenderName;
         }
 
         const userData = userSnap.data();
-        return resolveDisplayName({
+        this.cachedSenderName = resolveDisplayName({
           displayName: userData.displayName || this.currentUser.displayName,
           username: userData.username,
           email: userData.email || this.currentUser.email
         });
+        return this.cachedSenderName;
       } catch (error) {
         console.error('送信者名取得エラー:', error);
-        return resolveDisplayName({
+        this.cachedSenderName = resolveDisplayName({
           displayName: this.currentUser.displayName,
           email: this.currentUser.email
         });
+        return this.cachedSenderName;
       }
     },
 
