@@ -19,9 +19,6 @@
           <div class="user-card__body">
             <h3>{{ user.displayName }}</h3>
             <p>{{ user.email }}</p>
-            <p v-if="user.latestMessage" class="latest-message">
-              Last message: {{ user.latestMessage.text || user.latestMessage.content || 'メッセージあり' }}
-            </p>
             <p class="status" :class="{ online: user.isOnline, offline: !user.isOnline }">
               {{ user.isOnline ? 'Online' : 'Offline' }}
             </p>
@@ -33,7 +30,7 @@
 </template>
 
 <script>
-import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '@/firebaseConfig';
 import defaultProfileImage from '@/assets/default-profile.png';
 import { resolveDisplayName, resolveProfileImageUrl } from '../utils/userProfile';
@@ -55,23 +52,19 @@ export default {
       async (snapshot) => {
         try {
           const currentUserId = auth.currentUser?.uid;
-          const nextUsers = await Promise.all(
-            snapshot.docs
-              .filter((docSnapshot) => docSnapshot.id !== currentUserId)
-              .map(async (docSnapshot) => {
-                const userData = docSnapshot.data();
-                const latestMessageDoc = await getDoc(doc(db, `users/${docSnapshot.id}/messages`, 'latest'));
+          const nextUsers = snapshot.docs
+            .filter((docSnapshot) => docSnapshot.id !== currentUserId)
+            .map((docSnapshot) => {
+              const userData = docSnapshot.data();
 
-                return {
-                  uid: docSnapshot.id,
-                  email: userData.email || '',
-                  displayName: resolveDisplayName(userData),
-                  profileImageUrl: resolveProfileImageUrl(userData),
-                  isOnline: Boolean(userData.isOnline),
-                  latestMessage: latestMessageDoc.exists() ? latestMessageDoc.data() : null
-                };
-              })
-          );
+              return {
+                uid: docSnapshot.id,
+                email: userData.email || '',
+                displayName: resolveDisplayName(userData),
+                profileImageUrl: resolveProfileImageUrl(userData),
+                isOnline: Boolean(userData.isOnline)
+              };
+            });
 
           this.users = nextUsers.sort((left, right) => {
             if (left.isOnline !== right.isOnline) {
@@ -187,10 +180,6 @@ export default {
 
 .user-card__body p {
   color: #667085;
-}
-
-.latest-message {
-  margin-top: 10px;
 }
 
 .status {
