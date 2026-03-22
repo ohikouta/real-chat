@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:rules": "mkdir -p /tmp/firebase-config && XDG_CONFIG_HOME=/tmp/firebase-config FIREBASE_SKIP_UPDATE_CHECK=1 firebase emulators:exec --only auth,firestore --project demo-real-chat \"node scripts/verify-firestore-rules.mjs\""
+    "test:rules": "node scripts/run-firestore-rules-test.mjs"
   },
   "dependencies": {
     "core-js": "^3.8.3",
