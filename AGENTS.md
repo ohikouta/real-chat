@@ -63,7 +63,7 @@
 ## 承認ポリシー
 - Codex がユーザー確認を求めやすいのは、主に `git` の更新系（`fetch` `worktree add` `add` `commit` `push` など）、`gh` の更新系（`pr create` `pr comment` `pr review` `issue comment` など）、`gh api`、`npm install` 系、`firebase`、`docker`、`rm -rf`、および workspace 外への書き込みである。
 - 読み取り系の `gh issue/pr view|list`、`git status|diff|log|show`、`git worktree list`、`npm run lint|build` は原則として安全側に寄せる。
-- `gh api` は read-only な GET を安全側に寄せてよいが、write 系の `--method POST|PATCH|PUT|DELETE` は都度確認対象として扱う。
+- `gh api` は `.codex/rules/10-safe-default.rules` で allow された特定の read-only GET のみ安全側に寄せてよい。それ以外の `gh api` 呼び出しと、write 系の `--method POST|PATCH|PUT|DELETE` は都度確認対象として扱う。
 - `npm run serve` は標準のローカル確認フローとして扱う。branch / worktree ごとの別ポート起動を許容する。
 - Obsidian vault など workspace 外への書き込みは、内容が正しくても別途確認対象として扱う。
 - `git reset --hard`、`git checkout --`、`git clean -fd|-xdf`、`firebase deploy`、package publish は禁止対象として維持する。

@@ -88,7 +88,7 @@
 - Firebase エラー処理は「ユーザー向けメッセージ」と「開発者向けログ」を分離し、`logFirebaseError` とエラー変換 util で寄せる
 - 標準的な実装運用は `Issue確認 -> worktree/branch作成 -> 実装 -> lint/build -> PR作成 -> Copilotレビュー反映 -> 動作確認 -> merge` を基本線とする
 - 承認が必要になりやすいコマンド群と、安全側に寄せるコマンド群は `AGENTS.md` と `.codex/rules/*.rules` で管理する
-- `gh api` は read-only な GET を安全側、`--method POST|PATCH|PUT|DELETE` を要確認として扱う
+- `gh api` は `.codex/rules/10-safe-default.rules` で allow された特定の read-only GET のみ安全側、`--method POST|PATCH|PUT|DELETE` とそれ以外の `gh api` は要確認として扱う
 - GitHub の Issue / PR 状態を更新したターンでは、対応する Obsidian `タスク.md` も同ターンで同期する
 - PR は原則として通常 PR で作成し、draft PR は明確な未完理由がある場合に限る
 - PR 作成時は原則としてユーザー（`ohikouta`）を assignee に設定する
