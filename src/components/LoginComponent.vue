@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
 import { getAuthErrorMessage, getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
@@ -58,7 +58,9 @@ export default {
           }, { merge: true });
         } catch (error) {
           logFirebaseError('ログイン後のユーザー状態更新', error);
-          this.errorMessage = getFirestoreErrorMessage(error, 'ログインは完了しましたが、ユーザー状態の更新に失敗しました。');
+          this.errorMessage = getFirestoreErrorMessage(error, 'ログイン状態の同期に失敗しました。再度ログインしてください。');
+          await signOut(auth);
+          return;
         }
 
         this.$router.push({ name: 'Home' });
