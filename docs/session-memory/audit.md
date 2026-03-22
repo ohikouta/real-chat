@@ -201,3 +201,4 @@
 - `MessageInput` に disabled / buttonLabel を追加し、`PrivateChatView` で送信中 UI とエラー表示を統一
 - `TimelineView` `ThreadDetailView` `UserList` `ProfileDetails` `ImageUploader` の Firestore 失敗時メッセージとログ出力を共通 util へ寄せた
 - `npm run lint` と `npm run build` を再実行し、warning のみで通過を確認
+- 手動確認依頼時は `確認URL` `確認手順` `見てほしい観点` を毎回明示する運用を `AGENTS.md` に追記

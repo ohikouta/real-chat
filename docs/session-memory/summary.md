@@ -69,6 +69,7 @@
 - `LoginComponent` に送信中 UI と画面内エラー表示を追加し、ログイン後の `users.isOnline` 更新失敗もユーザー向けメッセージを返すよう変更
 - `MessageInput` に disabled / buttonLabel を追加し、`PrivateChatView` の DM 送信中 UI と送信失敗メッセージを統一
 - `TimelineView` `ThreadDetailView` `UserList` `ProfileDetails` `ImageUploader` の Firestore 失敗時メッセージを共通変換へ寄せた
+- 手動確認依頼では `確認URL` `確認手順` `見てほしい観点` を毎回提示する運用を `AGENTS.md` に追記
 - `npm run lint` を実行し、lint error なしを確認
 - `npm run build` を実行し、bundle size warning のみで build 成功を確認
 
