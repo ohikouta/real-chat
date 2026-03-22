@@ -242,3 +242,30 @@
 
 - PR 作成時の追加運用として、原則ユーザー（`ohikouta`）を assignee に設定する方針を確認した
 - `AGENTS.md` と `summary.md` に同方針を追記し、以後の PR 作成手順へ反映する前提を明文化した
+
+## 2026-03-22T08:20:00Z
+
+- Issue `#45` の着手として `/tmp/vue-chat-45` worktree で `firestore.rules` を新規追加した
+- `users` `threads` `threads/{threadId}/comments` `directMessages` の read / create / update / delete 制御を `docs/db/firestore-authz.md` に沿って Rules 化した
+- `firebase.json` に Firestore Rules パスと auth / firestore emulator 設定を追加した
+- `scripts/verify-firestore-rules.mjs` と `npm run test:rules` を追加し、Auth emulator の ID token を使って Rules を通過 / 拒否確認する検証スクリプトを用意した
+- `AGENTS.md` に `npm run test:rules` を追記した
+- `npm run lint` は成功した
+- `npm run test:rules` は Firestore emulator 起動に Java Runtime が必要なため、現環境では `java -version` 不在で未完了になった
+
+## 2026-03-22T08:45:00Z
+
+- Java Runtime 導入を試みたが、Homebrew / 直ダウンロードともにネットワーク速度がボトルネックとなり、このターンでは完了しなかった
+- Firestore emulator を使う `npm run test:rules` は次回継続課題として扱う
+
+## 2026-03-22T11:11:00Z
+
+- `/tmp/java-runtime/jdk-21.0.10+7-jre/Contents/Home` に展開した Temurin JRE 21 を使って Firestore emulator を起動できる状態にした
+- `firebase.json` の emulator ポートを auth `9199` / firestore `8180` に寄せた前提で、`scripts/verify-firestore-rules.mjs` が `FIREBASE_AUTH_EMULATOR_HOST` / `FIRESTORE_EMULATOR_HOST` を読むよう修正した
+- `npm run test:rules` を再実行し、`users` `threads` `threads/{threadId}/comments` `directMessages` の許可 / 拒否ケースがすべて PASS することを確認した
+
+## 2026-03-22T11:25:00Z
+
+- `#45 Firestore Security Rules と検証スクリプトを追加` を commit した
+- branch `issue-45-security-rules` を push し、通常 PR `#62` `#45 Firestore Security Rules を実装する` を作成した
+- PR 作成時に `assignee` として `ohikouta` を設定した
