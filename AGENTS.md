@@ -33,6 +33,8 @@
 - 軽微な修正や、ユーザーが明示的に依頼した実装については、そのまま進めてよい。
 - 標準的な Issue 実装フローは、原則として `Issue確認 -> worktree/branch作成 -> 実装 -> lint/build -> PR作成 -> Copilotレビュー反映 -> 動作確認 -> merge` とする。
 - PR を作成したら、原則として Copilot レビューを確認し、conversation ごとに修正内容を返信したうえでマージ判定へ進めること。
+- Copilot レビューを受けたときは、原則として `1 conversation = 1 commit` で対応し、どの指摘への修正かを commit message から追える状態を保つこと。
+- Copilot レビュー対応の標準手順は、`review thread の取得 -> 指摘内容と対応方針の共有 -> conversation ごとの修正 -> conversation ごとの commit -> lint/build -> 各 conversation へ返信 -> 最終確認` とする。
 - PR を作成する際は、原則として assignee をユーザー本人（`ohikouta`）に設定すること。
 - 動作確認は、可能なら branch / worktree ごとに開発サーバーを別ポートで立て、main 未反映でも確認できる状態を優先すること。
 - ユーザーが「ガンガン進める」「そのまま進める」と明示した実装タスクでは、標準フロー内の実装・検証・PR更新は止まらず進めてよい。ただし deploy、破壊的操作、workspace 外更新は別扱いとする。
@@ -46,6 +48,7 @@
 - Issue をクローズするか判断するときは、必ず Issue 本文の完了条件を基準に確認すること。話しながら論点が増えても、完了条件を超える追加論点は別 Issue 候補として切り出し、現在の Issue を不必要に膨らませないこと。
 - GitHub Issue の `やること` と `完了条件` は、進捗が追えるように原則チェックボックス形式で書くこと。特に `完了条件` は Issue クローズ判定の基準として扱う。
 - GitHub Issue / PR のタイトル・本文・コメントは、特別な理由がない限り日本語で記述すること。英語の自動生成文面は、そのまま残さず読みやすい日本語へ整えること。
+- PR 本文の作成や更新では、shell 展開事故を避けるため `--body-file` を優先し、バッククォートやパスを含む本文をそのまま `--body` へ流し込まないこと。
 - Obsidian と GitHub の二重管理を避け、着手中・着手予定の作業一覧は GitHub Issue を基準にし、Obsidian 側は補助的な整理と記録に寄せること。
 - Obsidian のタスクカードは、対応する GitHub Issue 番号を必ず明記すること。Issue 番号がないカードは正式着手前のメモとして扱い、実作業の前提にしないこと。
 - Obsidian のタスクカードは PR と直接紐づけなくてよい。PR は GitHub 上で Issue と紐づいていれば十分とする。
@@ -68,6 +71,7 @@
 - Firebase 呼び出しは `src/firebaseConfig.js` からエクスポートした `db` `auth` `storage` を利用し、重複初期化を避ける。
 - Firestore クエリは async/await または購読（`onSnapshot`）を使い、エラー処理とログを入れる。
 - CSS は既存スタイルに合わせて Scoped を基本とする。
+- commit は「レビューで追える意味のある単位」で切ること。1 Issue = 1 commit に固定せず、機能まとまりや review conversation 単位で分割し、逆に強く結びついた変更は不自然に分割しないこと。
 
 ## テスト・検証
 - 現状ユニットテストは未整備。必要に応じて Vue Test Utils + Jest などで導入。

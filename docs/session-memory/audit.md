@@ -181,3 +181,12 @@
 - `Header` `UserList` `TimelineView` `ThreadDetailView` `PrivateChatView` の表示名フォールバックを `displayName -> username -> email -> 匿名ユーザー` へ統一
 - `UserList` では自分自身を一覧から除外し、`users` 購読ベースで表示名・アイコン・オンライン状態を表示するよう整理
 - `npm run lint` と `npm run build` を再実行し、warning のみで通過を確認
+
+## 2026-03-22T10:05:00Z
+
+- PR `#59` の Copilot review thread 4 件を確認
+- `ProfileDetails` で Firestore snapshot が編集中フォームを上書きしないよう `dirty` 制御を追加
+- `UserList` から `users/{uid}/messages/latest` の都度読み取りを外し、`#44` の責務に不要な N+1 を解消
+- `PrivateChatView` で送信者名の解決結果をキャッシュし、毎送信ごとの Firestore 読み取りを避けるよう変更
+- `PrivateChatView` のチャット相手名 fallback を `匿名ユーザー` に統一
+- 運用ルールとして `1 conversation = 1 commit`、PR 本文は `--body-file` 優先、意味単位での commit 分割を `AGENTS.md` に追記

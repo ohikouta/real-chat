@@ -61,6 +61,8 @@
 - `ProfileDetails` をプロフィール表示と編集の集約画面へ作り替え、表示名更新とアイコン URL 編集、画像アップロード導線を追加
 - `Header` `UserList` `TimelineView` `ThreadDetailView` `PrivateChatView` の表示名解決を `displayName -> username -> email -> 匿名ユーザー` で統一
 - `UserList` は自分自身を一覧から除外し、`users` 購読ベースで表示名 / アイコン / オンライン状態を出す構成へ整理
+- PR `#59` の Copilot 指摘を受け、`ProfileDetails` のフォーム上書き防止、`UserList` の N+1 読み取り削減、`PrivateChatView` の送信者名キャッシュ、DM 相手名のフォールバック統一を実施
+- Copilot レビュー対応は `1 conversation = 1 commit` を標準とし、PR 本文更新は `--body-file` を優先する運用を `AGENTS.md` に追記
 - `npm run lint` を実行し、lint error なしを確認
 - `npm run build` を実行し、bundle size warning のみで build 成功を確認
 
