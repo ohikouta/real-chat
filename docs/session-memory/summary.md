@@ -1,8 +1,8 @@
 # Project Summary
 
-- Updated At: 2026-03-22T11:11:00Z
+- Updated At: 2026-03-22T11:25:00Z
 - Branch: issue-45-security-rules
-- HEAD: f02dfd05
+- HEAD: dcf72c40
 - Updated By: Codex
 
 ## Current Status
@@ -63,6 +63,7 @@
 - `/tmp/java-runtime/jdk-21.0.10+7-jre/Contents/Home` に展開した JRE 21 を使って Firestore emulator を起動できる状態にした
 - `scripts/verify-firestore-rules.mjs` が emulator の `*_HOST` 環境変数と現行ポート設定 `9199` / `8180` を読むよう修正した
 - `npm run test:rules` を実行し、`users` `threads` `comments` `directMessages` の許可 / 拒否ケースがすべて PASS することを確認した
+- `#45 Firestore Security Rules と検証スクリプトを追加` を commit し、PR `#62` を通常 PR として作成した
 
 ## Current Decisions
 
@@ -105,7 +106,7 @@
 
 ## Next Actions
 
-- `#45` の差分を branch / PR にまとめる
+- PR `#62` の Copilot レビューを確認し、必要な修正を反映する
 
 ## Reference Logs
 

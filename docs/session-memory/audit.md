@@ -263,3 +263,9 @@
 - `/tmp/java-runtime/jdk-21.0.10+7-jre/Contents/Home` に展開した Temurin JRE 21 を使って Firestore emulator を起動できる状態にした
 - `firebase.json` の emulator ポートを auth `9199` / firestore `8180` に寄せた前提で、`scripts/verify-firestore-rules.mjs` が `FIREBASE_AUTH_EMULATOR_HOST` / `FIRESTORE_EMULATOR_HOST` を読むよう修正した
 - `npm run test:rules` を再実行し、`users` `threads` `threads/{threadId}/comments` `directMessages` の許可 / 拒否ケースがすべて PASS することを確認した
+
+## 2026-03-22T11:25:00Z
+
+- `#45 Firestore Security Rules と検証スクリプトを追加` を commit した
+- branch `issue-45-security-rules` を push し、通常 PR `#62` `#45 Firestore Security Rules を実装する` を作成した
+- PR 作成時に `assignee` として `ohikouta` を設定した
