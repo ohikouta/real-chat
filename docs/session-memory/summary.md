@@ -56,6 +56,13 @@
 - `MessageInput` の未定義 `count` / `increment` を削除し、DM 入力用の最小コンポーネントへ整理
 - `UserList` の `users/{userId}/messages/latest` 表示は壊れない最小フォールバックへ調整
 - `directMessages` の `chatId + createdAt` 用 Firestore 複合インデックス定義として `firebase.json` と `firestore.indexes.json` を追加
+- `#44` の着手として `users.displayName` / `profileImageUrl` を最小プロフィール項目として扱う方針に整理
+- `RegisterComponent` で `displayName` を auth と `users/{uid}` の両方へ保存し、登録後は `/profile` へ遷移するよう変更
+- `ProfileDetails` をプロフィール表示と編集の集約画面へ作り替え、表示名更新とアイコン URL 編集、画像アップロード導線を追加
+- `Header` `UserList` `TimelineView` `ThreadDetailView` `PrivateChatView` の表示名解決を `displayName -> username -> email -> 匿名ユーザー` で統一
+- `UserList` は自分自身を一覧から除外し、`users` 購読ベースで表示名 / アイコン / オンライン状態を出す構成へ整理
+- PR `#59` の Copilot 指摘を受け、`ProfileDetails` のフォーム上書き防止、`UserList` の N+1 読み取り削減、`PrivateChatView` の送信者名キャッシュ、DM 相手名のフォールバック統一を実施
+- Copilot レビュー対応は `1 conversation = 1 commit` を標準とし、PR 本文更新は `--body-file` を優先する運用を `AGENTS.md` に追記
 - `npm run lint` を実行し、lint error なしを確認
 - `npm run build` を実行し、bundle size warning のみで build 成功を確認
 
@@ -85,11 +92,14 @@
 - スレッド参加者一覧は `threads.authorId` と `comments.authorId` を優先して集約し、`authorId` が欠ける場合のみ表示名ベースでフォールバックする
 - `PrivateChatView` の DM は `directMessages` を正式保存先とし、`chatId + createdAt` で購読する
 - `users/{userId}/messages/latest` は当面は補助表示データ扱いに留め、DM 保存先にはしない
+- プロフィール最小構成の正本は `users/{uid}` の `displayName` / `profileImageUrl` とし、互換のため `username` 読み取りは残す
+- 表示名のフォールバック順は `displayName -> username -> email -> 匿名ユーザー` を標準とする
+- プロフィール編集導線は `/profile` に寄せ、登録直後も `/profile` へ送る
 
 ## Next Actions
 
-- Issue `#43` の差分を branch / PR にまとめる
-- `#43` のレビュー後、`#44` または `#46` の着手順を決める
+- Issue `#44` の差分を branch / PR にまとめる
+- `#44` の手動確認後、`#46` のエラーハンドリング統一へ進む
 
 ## Reference Logs
 

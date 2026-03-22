@@ -96,6 +96,7 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
+import { resolveDisplayName } from '../utils/userProfile';
 
 function normalizeTags(rawTags) {
   return rawTags
@@ -159,21 +160,27 @@ export default {
     };
 
     const resolveAuthorName = async (user) => {
-      if (user.displayName) {
-        return user.displayName;
-      }
-
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (!userDoc.exists()) {
-          return user.email || '匿名ユーザー';
+          return resolveDisplayName({
+            displayName: user.displayName,
+            email: user.email
+          });
         }
 
         const userData = userDoc.data();
-        return userData.username || userData.email || user.email || '匿名ユーザー';
+        return resolveDisplayName({
+          displayName: userData.displayName || user.displayName,
+          username: userData.username,
+          email: userData.email || user.email
+        });
       } catch (error) {
         console.error('Failed to resolve author profile:', error);
-        return user.email || '匿名ユーザー';
+        return resolveDisplayName({
+          displayName: user.displayName,
+          email: user.email
+        });
       }
     };
 

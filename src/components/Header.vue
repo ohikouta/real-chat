@@ -27,31 +27,56 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
+import { resolveDisplayName } from '../utils/userProfile';
 
 export default {
   name: 'AppHeader',
   setup() {
     const router = useRouter();
     const user = ref(null);
-    let unsubscribe = null;
+    const userProfile = ref(null);
+    let unsubscribeAuth = null;
+    let unsubscribeProfile = null;
 
     onMounted(() => {
-      unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
         user.value = currentUser;
+
+        if (unsubscribeProfile) {
+          unsubscribeProfile();
+          unsubscribeProfile = null;
+        }
+
+        if (!currentUser) {
+          userProfile.value = null;
+          return;
+        }
+
+        unsubscribeProfile = onSnapshot(doc(db, 'users', currentUser.uid), (snapshot) => {
+          userProfile.value = snapshot.exists() ? snapshot.data() : null;
+        });
       });
     });
 
     onBeforeUnmount(() => {
-      if (unsubscribe) {
-        unsubscribe();
+      if (unsubscribeAuth) {
+        unsubscribeAuth();
+      }
+
+      if (unsubscribeProfile) {
+        unsubscribeProfile();
       }
     });
 
     const displayName = computed(() => {
       if (!user.value) return '';
-      return user.value.displayName || user.value.email || 'User';
+      return resolveDisplayName({
+        displayName: userProfile.value?.displayName || user.value.displayName,
+        username: userProfile.value?.username,
+        email: userProfile.value?.email || user.value.email
+      }, 'User');
     });
 
     const handleSignOut = async () => {
@@ -74,6 +99,7 @@ export default {
 
     return {
       user,
+      userProfile,
       displayName,
       handleSignOut
     };

@@ -99,6 +99,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { useRoute } from 'vue-router';
 import { auth, db } from '../firebaseConfig';
+import { resolveDisplayName } from '../utils/userProfile';
 
 export default {
   name: 'ThreadDetailView',
@@ -273,21 +274,27 @@ export default {
     };
 
     const resolveAuthorName = async (user) => {
-      if (user.displayName) {
-        return user.displayName;
-      }
-
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (!userDoc.exists()) {
-          return user.email || '匿名ユーザー';
+          return resolveDisplayName({
+            displayName: user.displayName,
+            email: user.email
+          });
         }
 
         const userData = userDoc.data();
-        return userData.username || userData.email || user.email || '匿名ユーザー';
+        return resolveDisplayName({
+          displayName: userData.displayName || user.displayName,
+          username: userData.username,
+          email: userData.email || user.email
+        });
       } catch (error) {
         console.error('Failed to resolve comment author profile:', error);
-        return user.email || '匿名ユーザー';
+        return resolveDisplayName({
+          displayName: user.displayName,
+          email: user.email
+        });
       }
     };
 

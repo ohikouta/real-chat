@@ -59,6 +59,7 @@ import {
 } from 'firebase/firestore';
 import MessageInput from '../components/MessageInput.vue';
 import { db } from '../firebaseConfig';
+import { resolveDisplayName } from '../utils/userProfile';
 
 function generateChatId(userId1, userId2) {
   if (!userId1 || !userId2) {
@@ -85,6 +86,7 @@ export default {
       currentUser: null,
       chatPartnerId: '',
       chatPartnerName: '相手ユーザー',
+      cachedSenderName: '',
       isLoading: true,
       loadError: '',
       sendError: '',
@@ -192,34 +194,52 @@ export default {
         const userDoc = await getDoc(doc(db, 'users', this.chatPartnerId));
 
         if (!userDoc.exists()) {
-          this.chatPartnerName = 'Unknown User';
+          this.chatPartnerName = '匿名ユーザー';
           return;
         }
 
         const userData = userDoc.data();
-        this.chatPartnerName = userData.username || userData.email || '匿名ユーザー';
+        this.chatPartnerName = resolveDisplayName(userData);
       } catch (error) {
         console.error('チャット相手取得エラー:', error);
-        this.chatPartnerName = 'Unknown User';
+        this.chatPartnerName = '匿名ユーザー';
       }
     },
 
     async resolveSenderName() {
+      if (this.cachedSenderName) {
+        return this.cachedSenderName;
+      }
+
       if (this.currentUser.displayName) {
-        return this.currentUser.displayName;
+        this.cachedSenderName = this.currentUser.displayName;
+        return this.cachedSenderName;
       }
 
       try {
         const userSnap = await getDoc(doc(db, 'users', this.currentUser.uid));
         if (!userSnap.exists()) {
-          return this.currentUser.email || '匿名ユーザー';
+          this.cachedSenderName = resolveDisplayName({
+            displayName: this.currentUser.displayName,
+            email: this.currentUser.email
+          });
+          return this.cachedSenderName;
         }
 
         const userData = userSnap.data();
-        return userData.username || userData.email || this.currentUser.email || '匿名ユーザー';
+        this.cachedSenderName = resolveDisplayName({
+          displayName: userData.displayName || this.currentUser.displayName,
+          username: userData.username,
+          email: userData.email || this.currentUser.email
+        });
+        return this.cachedSenderName;
       } catch (error) {
         console.error('送信者名取得エラー:', error);
-        return this.currentUser.email || '匿名ユーザー';
+        this.cachedSenderName = resolveDisplayName({
+          displayName: this.currentUser.displayName,
+          email: this.currentUser.email
+        });
+        return this.cachedSenderName;
       }
     },
 
