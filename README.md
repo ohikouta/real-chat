@@ -44,6 +44,12 @@ npm run build
 npm run lint
 ```
 
+### Firestore Rules 検証
+
+```bash
+npm run test:rules
+```
+
 ## Docker で起動する場合
 
 ```bash
@@ -52,7 +58,10 @@ docker compose up --build
 
 ## 関連ドキュメント
 
-- [docs/vision.md](./docs/vision.md)
+- [docs/project-assessment.md](./docs/project-assessment.md)
+- [docs/project-retrospective.md](./docs/project-retrospective.md)
+- [docs/deployment-plan.md](./docs/deployment-plan.md)
+- [docs/roadmap.md](./docs/roadmap.md)
 - [docs/routes.md](./docs/routes.md)
 - [docs/db/firestore.md](./docs/db/firestore.md)
 - [docs/emulator-acceptance.md](./docs/emulator-acceptance.md)
@@ -62,3 +71,4 @@ docker compose up --build
 - 画面上のアプリ名は `Real Chat` を使用する
 - npm package 名と Docker image 名は `real-chat` 系の表記に揃える
 - Firebase Emulator Suite を使った受け入れ確認は `docs/emulator-acceptance.md` を基準にする
+- 初回公開前の前提整理は `docs/deployment-plan.md` と `docs/roadmap.md` を参照する
