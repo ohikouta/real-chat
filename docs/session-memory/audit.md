@@ -5,7 +5,7 @@
 - `origin/main` 起点の clean worktree `/tmp/vue-chat-roadmap` を作成し、次フェーズ整理用の branch `issue-roadmap-docs` を開始
 - `README.md` の欠落リンク `docs/vision.md` を除去し、現状評価・振り返り・デプロイ計画・ロードマップ文書への導線を追加
 - `docs/project-assessment.md` `docs/project-retrospective.md` `docs/deployment-plan.md` `docs/roadmap.md` を追加し、現状整理と次フェーズ候補を文書化
-- `docs/session-memory/summary.md` に残っていた conflict marker を除去し、open Issue / PR がない現況へ更新
+- `docs/session-memory/summary.md` に残っていた conflict marker を除去し、open Issue / PR の現況へ更新
 - GitHub Issue `#63` `#64` `#65` を起票し、次フェーズの正式 backlog を作成
 - `#63 現状整理と次フェーズのロードマップを追加` を commit し、PR `#66` を通常 PR として作成
 
