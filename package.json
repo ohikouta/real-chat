@@ -7,7 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:rules": "node scripts/run-firestore-rules-test.mjs",
-    "deploy": "firebase deploy --only hosting"
+    "deploy": "npm run build && firebase deploy --only hosting --project default"
   },
   "dependencies": {
     "core-js": "^3.8.3",
