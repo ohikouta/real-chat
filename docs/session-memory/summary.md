@@ -74,7 +74,7 @@
 - PR `#62` が merge され、Firestore Security Rules が `main` に取り込まれた
 
 ### 2026-04-16 拡張 M0 ロードマップセッション
-- 3 並列 Explore agent の調査から拡張 M0 ロードマップを策定し、`docs/project-roadmap.md` と `.claude/plans/cheerful-herding-pike.md` に保存
+- 3 並列 Explore agent の調査から拡張 M0 ロードマップを策定し、`docs/project-roadmap.md` に保存（詳細プランは Claude Code セッション内ローカルに保持）
 - Blocker / High / Medium の分類基準を「M0 完了条件 (公開) を阻害するか」で再定義し、M0 真の Blocker は `firebase.json` / `.firebaserc` 不在の 1 件のみと再分類
 - FE 設計方針 4 レイヤー確定: Feature-Sliced Design / Pinia / 新規 `<script setup>` / scoped CSS + デザイントークン
 - M1/M2 のスコープを再構成: M1 = Blocker 解消 + FE 基盤刷新、M2 = 既存 Options API 移行 + 法務 + 運用監視

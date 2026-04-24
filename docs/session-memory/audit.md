@@ -271,13 +271,13 @@
 - PR 作成時に `assignee` として `ohikouta` を設定した
 ## 2026-04-16T13:30:00Z
 
-- 拡張 M0 ロードマップを策定し `.claude/plans/cheerful-herding-pike.md` と `docs/project-roadmap.md` に保存
+- 拡張 M0 ロードマップを策定し `docs/project-roadmap.md` に保存（詳細プランは Claude Code セッション内ローカルに保持）
 - 3 並列 Explore agent の調査結果から、現状 (origin/main) の実装済み機能と残課題を整理
 - Blocker / High / Medium の分類基準を「M0 完了条件 (公開) を阻害するか」で再定義
 - M0 の真の Blocker は `firebase.json` / `.firebaserc` 不在の 1 件のみと再分類（前回プランの「Critical 5 項目」は誤分類だったと整理）
 - FE 設計方針 4 レイヤー確定: Feature-Sliced Design / Pinia / 新規 `<script setup>` / scoped CSS + デザイントークン (CSS 変数)
 - 既存 M1/M2 のスコープを再構成: M1 = Blocker 解消 + FE 基盤刷新、M2 = 既存 Options API 移行 + 法務 + 運用監視
-- Firebase 構成は dev / prd 2 プロジェクト推奨を確定、最終決定は次セッション冒頭
+- Firebase 構成は dev / prd 2 プロジェクト案を推奨として記録。最終決定は次セッション冒頭に持ち越し
 - ohikouta 稼働可能時間帯を **平日 10:00-19:00 以外（早朝・夜・週末）** と確定。前回の memory に「平日 18-19:00 まで」と書かれていたのは逆だったため訂正
 - PR 戦略を「全 PR を ohikouta レビュー、自動 merge 廃止、1 PR 100 行以内」へ変更
 - 役割分担を Claude 自律 / ohikouta 必須 / グレーゾーン の 3 区分で明示化

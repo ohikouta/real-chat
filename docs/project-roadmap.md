@@ -1,7 +1,7 @@
 # vue-chat プロジェクト全体ロードマップ
 
 最終更新: 2026-04-16
-出典プラン: `~/.claude/plans/cheerful-herding-pike.md`
+出典: Claude Code セッションで策定したプラン（詳細版はローカルに保持、本ファイルが共有可能な要約）
 
 ---
 
