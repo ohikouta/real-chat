@@ -278,3 +278,34 @@
 - `#45 Firestore Security Rules と検証スクリプトを追加` を commit した
 - branch `issue-45-security-rules` を push し、通常 PR `#62` `#45 Firestore Security Rules を実装する` を作成した
 - PR 作成時に `assignee` として `ohikouta` を設定した
+## 2026-04-16T13:30:00Z
+
+- 拡張 M0 ロードマップを策定し `docs/project-roadmap.md` に保存（詳細プランは Claude Code セッション内ローカルに保持）
+- 3 並列 Explore agent の調査結果から、現状 (origin/main) の実装済み機能と残課題を整理
+- Blocker / High / Medium の分類基準を「M0 完了条件 (公開) を阻害するか」で再定義
+- M0 の真の Blocker は `firebase.json` / `.firebaserc` 不在の 1 件のみと再分類（前回プランの「Critical 5 項目」は誤分類だったと整理）
+- FE 設計方針 4 レイヤー確定: Feature-Sliced Design / Pinia / 新規 `<script setup>` / scoped CSS + デザイントークン (CSS 変数)
+- 既存 M1/M2 のスコープを再構成: M1 = Blocker 解消 + FE 基盤刷新、M2 = 既存 Options API 移行 + 法務 + 運用監視
+- Firebase 構成は dev / prd 2 プロジェクト案を推奨として記録。最終決定は次セッション冒頭に持ち越し
+- ohikouta 稼働可能時間帯を **平日 10:00-19:00 以外（早朝・夜・週末）** と確定。前回の memory に「平日 18-19:00 まで」と書かれていたのは逆だったため訂正
+- PR 戦略を「全 PR を ohikouta レビュー、自動 merge 廃止、1 PR 100 行以内」へ変更
+- 役割分担を Claude 自律 / ohikouta 必須 / グレーゾーン の 3 区分で明示化
+- エージェント設計として Orchestrator-Workers + Parallelization (Sectioning) + Evaluator-Optimizer を採用、出典 https://www.anthropic.com/engineering/building-effective-agents
+- GitHub Issue 7 件起票（全て ohikouta assignee）:
+  - `#67` NEW-a firebase.json + .firebaserc 整備（M0 Blocker B3）
+  - `#68` NEW-b1 messages 廃止（M1 Blocker B1）
+  - `#69` NEW-b2 ImageUploader alert/console.log 撲滅（M1 Blocker B2）
+  - `#70` NEW-b3 Header signOut UX 改善（M1 Blocker B4）
+  - `#71` NEW-b4 src/ FSD 移行 + Pinia 導入 + user store 化（M1, Blocker B5 含む）
+  - `#72` NEW-b5 CSS デザイントークン導入（M1）
+  - `#73` NEW-c1 main ブランチ保護ルール設定（独立、ohikouta 作業）
+- Google Calendar prj-vue-chat を新方針へ同期:
+  - M0 終了日を 4/30 → 5/10 に更新（バックストップ、見込み 4/26）
+  - M1 を 5/31 単発 → 6/21 終了に更新、スコープを Blocker解消 + FE基盤刷新に再構成
+  - M2 のスコープを「既存 Options API 移行 / 法務 / 運用監視 / Sentry / GitHub Actions」へ更新
+  - NEW-a (#67) 作業枠を 4/23 に追加
+  - W1 (4/16-4/19) ohikouta 作業枠 160min を all-day で追加
+  - W2 (4/20-4/26) ohikouta 作業枠 190min を all-day で追加
+- Slack `#prj-vue-chat` (C0ASEJ460G4) にロードマップ図式化を `<@U08RPS2BLUD>` メンション付きで投稿
+- working tree 整理: `issue-56-codex-approval-flow` (merge 済み) を削除し、本セッションの成果物を `docs/extended-m0-roadmap` branch (origin/main 起点) に再構成して PR 化
+
