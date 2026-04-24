@@ -1,5 +1,14 @@
 # Project Audit Log
 
+## 2026-03-24T00:00:00Z
+
+- `origin/main` 起点の clean worktree `/tmp/vue-chat-roadmap` を作成し、次フェーズ整理用の branch `issue-roadmap-docs` を開始
+- `README.md` の欠落リンク `docs/vision.md` を除去し、現状評価・振り返り・デプロイ計画・ロードマップ文書への導線を追加
+- `docs/project-assessment.md` `docs/project-retrospective.md` `docs/deployment-plan.md` `docs/roadmap.md` を追加し、現状整理と次フェーズ候補を文書化
+- `docs/session-memory/summary.md` に残っていた conflict marker を除去し、open Issue / PR の現況へ更新
+- GitHub Issue `#63` `#64` `#65` を起票し、次フェーズの正式 backlog を作成
+- `#63 現状整理と次フェーズのロードマップを追加` を commit し、PR `#66` を通常 PR として作成
+
 ## 2026-03-21T14:07:45Z
 
 - PR `#53` の merge を取り込み、`issue-41-thread-detail` worktree を `origin/main` 最新へ更新
