@@ -7,6 +7,15 @@
 - `dev` / `prd` 分離は M0 時点では行わない。必要になり次第 M1 以降で追加する
 - 公開 URL: `https://vue-chat-c4179.web.app`
 
+### 依存 PR（merge 済みであること）
+
+本手順書は以下の PR で追加されるファイルに依存する:
+
+- PR #75: `.env.sample`（環境変数の雛形）
+- PR #77: `firebase.json` の `hosting` セクション、`.firebaserc`（`default` alias 定義）、`package.json` の `deploy` script
+
+これらが main に merge 済みの状態で本手順を実行する。
+
 ## 初回セットアップ
 
 ### 1. Firebase CLI
