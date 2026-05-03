@@ -19,3 +19,9 @@ google-cloud-sdk-419.0.0-linux-x86_64.tar.gz
 
 note/
 AGENTS.md
+
+# firebase cli local cache
+.firebase/
+
+# claude local-only project notes
+CLAUDE.local.md
