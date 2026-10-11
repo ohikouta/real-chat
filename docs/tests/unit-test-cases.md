@@ -69,16 +69,16 @@
 | UT-DM-COMPOSER-002 | 空白文字だけを入力して送信する | 送信イベントが発火しない | | | |
 | UT-DM-COMPOSER-003 | メッセージを入力して送信する | 入力内容を通知し、入力欄を空にする | | | |
 
-## ケース選定の根拠
+## 参照仕様と確認するコード
 
-| 機能領域 | テストベース | テスト対象 |
+| 機能 | 参照する仕様・Issue | 確認するコード |
 |---|---|---|
-| プロフィール情報の表示 | [Firestoreデータモデル](../../db/firestore.md) のユーザープロフィール項目 | [`resolveDisplayName`](../../../src/utils/userProfile.js)、[`resolveProfileImageUrl`](../../../src/utils/userProfile.js) |
-| 認証・Firestore・画像操作時のエラー案内 | Firebaseの各サービスが返すエラーコードと利用者向け案内の要件 | [`firebaseError.js`](../../../src/utils/firebaseError.js) |
-| プロフィール画像アップロード | [Issue #69 の完了条件](https://github.com/ohikouta/real-chat/issues/69) | [`ImageUploader.vue`](../../../src/components/ImageUploader.vue) |
+| プロフィール情報の表示 | [Firestoreデータモデル](../db/firestore.md) のユーザープロフィール項目 | [`resolveDisplayName`](../../src/utils/userProfile.js)、[`resolveProfileImageUrl`](../../src/utils/userProfile.js) |
+| 認証・Firestore・画像操作時のエラー案内 | Firebaseの各サービスが返すエラーコードと利用者向け案内の要件 | [`firebaseError.js`](../../src/utils/firebaseError.js) |
+| プロフィール画像アップロード | [Issue #69 の完了条件](https://github.com/ohikouta/real-chat/issues/69) | [`ImageUploader.vue`](../../src/components/ImageUploader.vue) |
 | ログアウト時の状態管理 | [Issue #70 の完了条件](https://github.com/ohikouta/real-chat/issues/70) | `Header` のログアウト操作 |
-| 1対1メッセージの識別 | [chatId仕様](../../db/chat-id.md) | `PrivateChatView` のchatId生成 |
-| メッセージ入力 | ダイレクトメッセージの送信操作 | [`MessageInput.vue`](../../../src/components/MessageInput.vue) |
+| 1対1メッセージの識別 | [chatId仕様](../db/chat-id.md) | `PrivateChatView` のchatId生成 |
+| メッセージ入力 | ダイレクトメッセージの送信操作 | [`MessageInput.vue`](../../src/components/MessageInput.vue) |
 
 入力条件の分類には、ISTQB CTFL v4.0.1 §4.2.1 の同値分割を参考にする。文字列の有無・型・空白状態や、既知／未知のエラーコードを異なる入力群として扱う。順序を持つ値に仕様上の境界がある場合は、同シラバス §4.2.2 の境界値分析を適用する。
 

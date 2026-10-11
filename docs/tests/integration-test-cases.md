@@ -12,7 +12,7 @@ Firestore Security RulesとFirebase Authentication / Firestore Emulatorの認可
 | テストユーザー | Alice、Bob、Charlie（テスト実行時に作成） |
 | 初期化 | スクリプトがFirestore Emulatorのデータを消去してから開始する |
 
-接続先は Firebase Auth Emulator と Cloud Firestore Emulator である。実行スクリプトは [`scripts/verify-firestore-rules.mjs`](../../../scripts/verify-firestore-rules.mjs)、Rules定義は [`firestore.rules`](../../../firestore.rules) を参照する。
+接続先は Firebase Auth Emulator と Cloud Firestore Emulator である。実行スクリプトは [`scripts/verify-firestore-rules.mjs`](../../scripts/verify-firestore-rules.mjs)、Rules定義は [`firestore.rules`](../../firestore.rules) を参照する。
 
 ## ケース一覧
 
