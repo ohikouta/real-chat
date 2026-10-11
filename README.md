@@ -58,17 +58,5 @@ docker compose up --build
 
 ## 関連ドキュメント
 
-- [docs/project-assessment.md](./docs/project-assessment.md)
-- [docs/project-retrospective.md](./docs/project-retrospective.md)
-- [docs/deployment-plan.md](./docs/deployment-plan.md)
-- [docs/roadmap.md](./docs/roadmap.md)
-- [docs/routes.md](./docs/routes.md)
-- [docs/db/firestore.md](./docs/db/firestore.md)
-- [docs/emulator-acceptance.md](./docs/emulator-acceptance.md)
-
-## 補足
-
-- 画面上のアプリ名は `Real Chat` を使用する
-- npm package 名と Docker image 名は `real-chat` 系の表記に揃える
-- Firebase Emulator Suite を使った受け入れ確認は `docs/emulator-acceptance.md` を基準にする
-- 初回公開前の前提整理は `docs/deployment-plan.md` と `docs/roadmap.md` を参照する
+- [設計・仕様ドキュメント](./docs/README.md)
+- [開発・デプロイ手順](./docs/README.md#開発と運用)
