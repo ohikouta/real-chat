@@ -56,10 +56,10 @@
 - Obsidian のタスクカードは、対応する GitHub Issue 番号を必ず明記すること。Issue 番号がないカードは正式着手前のメモとして扱い、実作業の前提にしないこと。
 - Obsidian のタスクカードは PR と直接紐づけなくてよい。PR は GitHub 上で Issue と紐づいていれば十分とする。
 - GitHub Issue / PR の本文やコメントには、原則として Obsidian ノートへの参照や依存関係を書かないこと。GitHub 上の情報だけで作業単位と判断材料が閉じる状態を保つこと。
-- レビューや相談の中で決まった事項は、その場で関連ドキュメント、`docs/session-memory/summary.md`、`docs/session-memory/audit.md` に反映すること。未記録の口頭合意を次回セッションへ持ち越さないこと。
+- レビューや相談で確定した製品仕様・設計判断は、該当する設計ドキュメントまたは GitHub Issue / PR に記録すること。作業の進捗や履歴は GitHub Issue / PR と Git 履歴を参照し、リポジトリ内にセッション引き継ぎ用の文書を作成しないこと。
 - GitHub Issue / PR の状態を更新したターンでは、対応する Obsidian `タスク.md` のカード状態も同じターンで同期すること。後でまとめて更新する運用にしないこと。
 - 特に Issue close / PR merge / 実装完了確認のタイミングでは、GitHub と Obsidian の状態ズレがないかを終了前チェック項目として扱うこと。
-- 設計文書で大きな手戻りや構造的なミスが起きた場合は、原因・再発防止策を `docs/session-memory/failure-notes.md` に記録すること。
+- 設計文書で大きな手戻りや構造的なミスが起きた場合は、原因・再発防止策を Obsidian の `prj/vue-chat/12_Failures/` に記録すること。
 
 ## 承認ポリシー
 - Codex がユーザー確認を求めやすいのは、主に `git` の更新系（`fetch` `worktree add` `add` `commit` `push` など）、`gh` の更新系（`pr create` `pr comment` `pr review` `issue comment` など）、`gh api`、`npm install` 系、`firebase`、`docker`、`rm -rf`、および workspace 外への書き込みである。
@@ -84,7 +84,7 @@
 ## ナレッジ共有
 - 新規スクリプトやビルド手順を追加する際は本ファイルを更新し、他の開発者が迷わないようにする。
 - Obsidian 側に重要な設計判断や運用ルールを追加した場合は、必要に応じて本ファイルから参照先を更新する。
-- セッション継続が必要な作業では、区切りごとに `docs/session-memory/summary.md` を最新化し、`docs/session-memory/audit.md` に実施ログを追記すること。次回開始時は `summary.md` を起点にし、必要に応じて `audit.md` `failure-notes.md` と履歴も遡って進捗を把握する。
+- 次回へ引き継ぐ作業情報は GitHub Issue / PR と Git 履歴に記録する。製品の仕様・設計として共有すべき内容だけを `docs/` に記載し、セッション引き継ぎ用の要約・監査ログを `docs/` に置かないこと。
 - Vue / React の設計文書は、書き始める前に「主軸はページかコンポーネントか」「成果物に含めるセクション」「含めない情報」「レビュー観点」を先に固定すること。
 - マルチエージェントで進める場合は、`docs/multi-agent-orchestration.md` を参照し、原則 `1 Issue = 1 子エージェント` で担当を分けること。
 - 並列作業では branch だけでなく worktree も分けること。tmux の pane 分割だけで同じ作業ディレクトリを共有しないこと。
