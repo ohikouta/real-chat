@@ -1,28 +1,28 @@
 <template>
-  <section class="register-card">
+  <section class="shadcn-ui register-card">
     <h2>Register</h2>
     <p class="register-note">登録時に表示名を設定します。あとから編集する場所は Profile です。</p>
 
-    <label class="field">
-      <span>Email</span>
-      <input v-model.trim="email" type="email" placeholder="Email" />
-    </label>
+    <div class="field">
+      <Label for="register-email">Email</Label>
+      <Input id="register-email" v-model.trim="email" type="email" autocomplete="email" placeholder="Email" :disabled="isSubmitting" />
+    </div>
 
-    <label class="field">
-      <span>Password</span>
-      <input v-model="password" type="password" placeholder="Password" />
-    </label>
+    <div class="field">
+      <Label for="register-password">Password</Label>
+      <Input id="register-password" v-model="password" type="password" autocomplete="new-password" placeholder="Password" :disabled="isSubmitting" />
+    </div>
 
-    <label class="field">
-      <span>Display Name</span>
-      <input v-model.trim="displayName" type="text" maxlength="40" placeholder="表示名" />
-    </label>
+    <div class="field">
+      <Label for="register-display-name">Display Name</Label>
+      <Input id="register-display-name" v-model.trim="displayName" type="text" autocomplete="nickname" maxlength="40" placeholder="表示名" :disabled="isSubmitting" />
+    </div>
 
-    <p v-if="errorMessage" class="message message--error">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="message message--error" role="alert">{{ errorMessage }}</p>
 
-    <button class="primary-button" @click="register" :disabled="isSubmitting">
+    <Button class="w-full" size="lg" @click="register" :disabled="isSubmitting">
       {{ isSubmitting ? '登録中...' : 'Register' }}
-    </button>
+    </Button>
   </section>
 </template>
 
@@ -32,7 +32,12 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebaseConfig';
 import { getAuthErrorMessage, getFirestoreErrorMessage, logFirebaseError } from '../utils/firebaseError';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
 export default {
+  components: { Button, Input, Label },
   data() {
     return {
       email: '',
@@ -104,12 +109,6 @@ export default {
   gap: 8px;
 }
 
-.field input {
-  border: 1px solid #d0d5dd;
-  border-radius: 10px;
-  padding: 12px 14px;
-}
-
 .message {
   margin: 0;
 }
@@ -118,18 +117,4 @@ export default {
   color: #c62828;
 }
 
-.primary-button {
-  border: none;
-  border-radius: 10px;
-  background: #35469c;
-  color: #fff;
-  padding: 12px 16px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.primary-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
 </style>

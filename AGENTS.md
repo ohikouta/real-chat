@@ -75,6 +75,9 @@
 - Firebase 呼び出しは `src/firebaseConfig.js` からエクスポートした `db` `auth` `storage` を利用し、重複初期化を避ける。
 - Firestore クエリは async/await または購読（`onSnapshot`）を使い、エラー処理とログを入れる。
 - CSS は既存スタイルに合わせて Scoped を基本とする。
+- 共通 UI 部品は shadcn-vue を使用し、ソースを `src/components/ui/` に配置する。JavaScript 版の生成設定は `components.json`、共通テーマは `src/styles/ui.css` で管理する。
+- UI 部品の追加は `npx shadcn-vue@2.8.2 add <部品名>` を使用する。生成後は lint/build と、使用画面での入力・操作・表示を確認する。
+- Tailwind CSS は PostCSS 経由で読み込む。既存画面への段階的な適用では Preflight を読み込まず、部品の基本スタイルは `.shadcn-ui` 内に適用する。
 - commit は「レビューで追える意味のある単位」で切ること。1 Issue = 1 commit に固定せず、機能まとまりや review conversation 単位で分割し、逆に強く結びついた変更は不自然に分割しないこと。
 
 ## テスト・検証
